@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jack's community</title>
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@200..800&family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="roboto.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: #f9f9f9;
+        }
+
+        header {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            z-index: 1000;
+        }
+
+        .header-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 800px; 
+            position: relative;
+            margin: 10px;
+        }
+
+        .title {
+            flex-grow: 1;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .image-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: absolute;
+            right: 10px; 
+        }
+
+        .profile {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-list-container {
+            width: 30%;
+            max-width: 600px;
+            min-width: 400px;
+            margin-top: 100px;
+            padding: 10px;
+        }
+
+        .welcome {
+            width: 70%;
+            font-size: 1.2em;
+            margin: 0 auto;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .post-write-box {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+
+        #write-btn {
+            padding: 8px 24px;
+            background-color: #ACA0EB;
+            color: white;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+        }
+
+        .post-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .post-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #fff;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .post-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 10px;
+            margin-left: 10px;
+            margin-bottom: -10px;
+        }
+
+        .post-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .post-info-left {
+            display: flex;
+            gap: 20px;
+        }
+
+        .post-info-left p {
+            margin: 0 5px;
+        }
+
+        .post-info-item {
+            display: flex;
+            align-items: center;
+            gap: 4px; /* 텍스트와 숫자 간 간격 */
+        }
+
+        .post-info-right {
+            display: flex;
+            align-items: center;
+            font-size: 0.9em;
+            color: #999;
+        }
+
+        .post-info-writer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 20px;
+        }
+
+        .writer-profile {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .writer-profile-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .writer-name {
+            font-size: 0.95em;
+            color: #333;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-box">
+            <h1 class="title roboto-light">jack's community</h1>
+            <div class="image-box">
+                <img class="profile" src="/images/징징이커피.JPG" alt="프로필 이미지">
+            </div>
+        </div>
+    </header>
+
+    <div class="post-list-container">
+        <div class="welcome">
+            <p>안녕하세요, <br><b>jack's community</b> 입니다.</p>
+        </div>
+        <!-- 게시글 작성 버튼 -->
+        <div class="post-write-box">
+            <button type="button" id="write-btn">게시글 작성</button>
+        </div>
+        <div class="post-box" id="post-box">
+            <!-- 게시글 작성 버튼을 누를 시 여기에 post-card 생성 -->
+        </div>
+    </div>
+
+    <script>
+        const postBox = document.getElementById('post-box');
+        const writeBtn = document.getElementById('write-btn');
+
+        // 게시글 작성 버튼 클릭 시 게시글 카드 추가
+        writeBtn.addEventListener('click', () => {
+            createPostCard();
+        });
+
+        // 게시글 카드 생성 함수
+        function createPostCard() {
+            const postCard = document.createElement('div');
+            postCard.classList.add('post-card');
+            postCard.innerHTML = `
+                <div class="post-title">제목 1</div>
+                <div class="post-info">
+                    <div class="post-info-left">
+                         <div class="post-info-item">
+                            <p>좋아요</p><span>0</span>
+                        </div>
+                        <div class="post-info-item">
+                            <p>댓글</p><span>0</span>
+                        </div>
+                        <div class="post-info-item">
+                            <p>조회수</p><span>0</span>
+                        </div>
+                    </div>
+                    <div class="post-info-right">
+                        <p>2024-10-31 00:00:00</p>
+                    </div>
+                </div>
+                <div class="post-info-writer">
+                    <div class="writer-profile">
+                        <img class="writer-profile-img" src="/images/징징이커피.JPG" alt="작성자 이미지">
+                    </div>
+                    <div class="writer-name">
+                        <p><b>더미 작성자1</b></p>
+                    </div>
+                </div>
+            `;
+            postBox.appendChild(postCard);
+        }
+    </script>
+</body>
+</html>
