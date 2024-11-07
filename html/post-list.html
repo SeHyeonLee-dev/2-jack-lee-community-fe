@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>jack's community</title>
+    <title>Jack's community</title>
     <link href="https://fonts.googleapis.com/css2?family=Karla:wght@200..800&family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -189,7 +189,7 @@
         <div class="header-box">
             <h1 class="title roboto-light">jack's community</h1>
             <div class="image-box">
-                <img class="profile" src="/images/징징이커피.JPG" alt="프로필 이미지">
+                <a href=""><img class="profile" src="/images/징징이커피.JPG" alt="프로필 이미지"></a>
             </div>
         </div>
     </header>
@@ -207,48 +207,6 @@
         </div>
     </div>
 
-    <script>
-        const postBox = document.getElementById('post-box');
-        const writeBtn = document.getElementById('write-btn');
-
-        // 게시글 작성 버튼 클릭 시 게시글 카드 추가
-        writeBtn.addEventListener('click', () => {
-            createPostCard();
-        });
-
-        // 게시글 카드 생성 함수
-        function createPostCard() {
-            const postCard = document.createElement('div');
-            postCard.classList.add('post-card');
-            postCard.innerHTML = `
-                <div class="post-title">제목 1</div>
-                <div class="post-info">
-                    <div class="post-info-left">
-                         <div class="post-info-item">
-                            <p>좋아요</p><span>0</span>
-                        </div>
-                        <div class="post-info-item">
-                            <p>댓글</p><span>0</span>
-                        </div>
-                        <div class="post-info-item">
-                            <p>조회수</p><span>0</span>
-                        </div>
-                    </div>
-                    <div class="post-info-right">
-                        <p>2024-10-31 00:00:00</p>
-                    </div>
-                </div>
-                <div class="post-info-writer">
-                    <div class="writer-profile">
-                        <img class="writer-profile-img" src="/images/징징이커피.JPG" alt="작성자 이미지">
-                    </div>
-                    <div class="writer-name">
-                        <p><b>더미 작성자1</b></p>
-                    </div>
-                </div>
-            `;
-            postBox.appendChild(postCard);
-        }
-    </script>
+    <script src="/js/post-list-script.js"></script>
 </body>
 </html>
