@@ -1,12 +1,25 @@
 const postBox = document.getElementById('post-box');
 const writeBtn = document.getElementById('write-btn');
 
-// 게시글 작성 버튼 클릭 시 게시글 카드 추가
+function navigateToPostAdd() {
+    window.location.href = 'post-add.html';
+}
+
+// 게시글 작성 버튼 클릭 시 작성 페이지 이동
 writeBtn.addEventListener('click', () => {
+    navigateToPostAdd();
     createPostCard();
 });
 
-// 게시글 카드 생성 함수
+writeBtn.addEventListener('mouseout', () => {
+    writeBtn.style.backgroundColor = '#ACA0EB';
+});
+
+writeBtn.addEventListener('mouseover', () => {
+    writeBtn.style.backgroundColor = '#7F6AEE';
+});
+
+//게시글 카드 생성 함수
 function createPostCard() {
     const postCard = document.createElement('div');
     postCard.classList.add('post-card');
@@ -30,7 +43,7 @@ function createPostCard() {
         </div>
         <div class="post-info-writer">
             <div class="writer-profile">
-                <img class="writer-profile-img" src="/images/징징이커피.JPG" alt="작성자 이미지">
+                <img class="writer-profile-img" src="../images/징징이커피.JPG" alt="작성자 이미지">
             </div>
             <div class="writer-name">
                 <p><b>더미 작성자1</b></p>

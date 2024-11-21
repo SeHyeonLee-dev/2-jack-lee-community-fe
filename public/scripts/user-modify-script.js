@@ -33,3 +33,26 @@ document.querySelector('#user-modify-delete').addEventListener('click', () => {
         UserDeleteModal.style.display = 'none';
     };
 });
+
+// 드롭다운 요소 클릭 시 다른 페이지 이동
+const dropdownLinks = document.querySelectorAll('.dropdown-content a');
+dropdownLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+        event.preventDefault(); // html의 a 태그의 기능을 막고 자바스크립트로 페이지 이동을 명령하기 위해 선언
+        const linkText = link.textContent.trim();
+
+        switch (linkText) {
+            case '회원정보수정':
+                window.location.href = 'user-modify.html';
+                break;
+            case '비밀번호수정':
+                window.location.href = 'user-pw-modify.html';
+                break;
+            case '로그아웃':
+                // TODOS: 로그아웃 로직 추가
+                break;
+            default:
+                console.error('Unknown link:', linkText);
+        }
+    });
+});
