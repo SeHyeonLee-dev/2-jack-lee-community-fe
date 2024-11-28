@@ -19,14 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 완료 버튼 이벤트 처리
-    document
-        .getElementById('title')
-        .addEventListener('input', toggleCompleteButton);
-    document
-        .getElementById('content')
-        .addEventListener('input', toggleCompleteButton);
+    // 제목과 내용이 모두 입력되면 helper text 숨기기
+    function toggleHelperText() {
+        if (titleInput.value.trim() && contentInput.value.trim()) {
+            helperText.style.display = 'none';
+        } else {
+            helperText.style.display = 'block';
+        }
+    }
 
+    // 제목과 내용이 모두 입력되면 완료 버튼 활성화
     function toggleCompleteButton() {
         const title = document.getElementById('title').value;
         const content = document.getElementById('content').value;
@@ -41,39 +43,64 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    titleInput.addEventListener('input', toggleHelperText);
+    contentInput.addEventListener('input', toggleHelperText);
+
+    titleInput.addEventListener('input', toggleCompleteButton);
+    contentInput.addEventListener('input', toggleCompleteButton);
+
     // 완료 버튼 클릭 시 검증
-    postAddCompleteBtn.addEventListener('click', (event) => {
+    postAddCompleteBtn.addEventListener('click', async (event) => {
         event.preventDefault(); // 폼의 기본 제출 동작 방지
 
-        const title = titleInput.value.trim();
-        const content = contentInput.value.trim();
+        const post_title = titleInput.value.trim();
+        const post_content = contentInput.value.trim();
 
-        //
-        if (title && content) {
-            helperText.textContent = '*helper text';
-            return;
-        }
-
-        // 제목과 내용이 모두 작성되었을 경우 폼 데이터를 처리하는 로직
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('content', content);
-
-        if (imageInput.files.length > 0) {
-            formData.append('image', imageInput.files[0]);
-        }
-
-        // 서버에 데이터를 전송하는 예시 (백엔드 엔드포인트가 필요)
-        fetch('/your-backend-endpoint', {
-            method: 'POST',
-            body: formData,
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
+        // 게시글 작성 API 요청
+        try {
+            const postResponse = await fetch('http://localhost:3000/posts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    post_title,
+                    post_content,
+                }),
             });
+
+            const result = await postResponse.json();
+            const postId = result.data.post_id;
+
+            // 게시글 이미지 업로드 API 요청
+            if (imageInput.files.length > 0) {
+                const formData = new FormData();
+                formData.append('post_image', imageInput.files[0]);
+
+                const uploadResponse = await fetch(
+                    `http://localhost:3000/posts/${postId}/post-image`,
+                    {
+                        method: 'POST',
+                        body: formData,
+                    },
+                );
+
+                const uploadResult = await uploadResponse.json();
+                if (!uploadResponse.ok) {
+                    console.log(
+                        `게시글 이미지 업로드 실패: ${uploadResult.message}`,
+                    );
+                    return;
+                } else {
+                    console.log('게시글 이미지 업로드 성공');
+                }
+            }
+
+            // 게시글 작성 성공 시 게시글 목록 페이지 이동
+            if (confirm('게시글을 작성했습니다.')) {
+                window.location.href = 'post-list.html'; // 확인 버튼 클릭 시 이동
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('게시글 작성 중 문제가 발생했습니다.');
+        }
     });
 });

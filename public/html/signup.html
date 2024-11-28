@@ -235,44 +235,48 @@
             <form class="signup-form">
                 <!-- 이메일 입력 -->
                 <div class="form-group">
-                    <label for="email">이메일*</label>
+                    <label for="emailInput">이메일*</label>
                     <input
                         type="email"
-                        id="email"
+                        id="emailInput"
                         placeholder="이메일을 입력하세요"
+                        required
                     />
                     <span class="helper-text">* helper text</span>
                 </div>
 
                 <!-- 비밀번호 입력 -->
                 <div class="form-group">
-                    <label for="password">비밀번호*</label>
+                    <label for="passwordInput">비밀번호*</label>
                     <input
                         type="password"
-                        id="password"
+                        id="passwordInput"
                         placeholder="비밀번호를 입력하세요"
+                        required
                     />
                     <span class="helper-text">* helper text</span>
                 </div>
 
                 <!-- 비밀번호 확인 -->
                 <div class="form-group">
-                    <label for="confirm-password">비밀번호 확인*</label>
+                    <label for="confirmPwInput">비밀번호 확인*</label>
                     <input
                         type="password"
-                        id="confirm-password"
+                        id="confirmPwInput"
                         placeholder="비밀번호를 한번 더 입력하세요"
+                        required
                     />
                     <span class="helper-text">* helper text</span>
                 </div>
 
                 <!-- 닉네임 입력 -->
                 <div class="form-group">
-                    <label for="nickname">닉네임*</label>
+                    <label for="nicknameInput">닉네임*</label>
                     <input
                         type="text"
-                        id="nickname"
+                        id="nicknameInput"
                         placeholder="닉네임을 입력하세요"
+                        required
                     />
                     <span class="helper-text">* helper text</span>
                 </div>
@@ -284,6 +288,7 @@
                 <p class="login-link">로그인하러 가기</p>
             </form>
         </div>
+        <script defer type="module" src="../scripts/signup-script.js"></script>
         <script
             defer
             type="module"

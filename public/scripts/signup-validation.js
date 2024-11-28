@@ -1,14 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirm-password');
-    const nicknameInput = document.getElementById('nickname');
+    const emailInput = document.getElementById('emailInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const confirmPasswordInput = document.getElementById('confirmPwInput');
+    const nicknameInput = document.getElementById('nicknameInput');
     const profileCircle = document.querySelector('.profile-circle');
+    const profileImage = document.getElementById('fileInput');
     const signupButton = document.querySelector('.signup-button');
     const helperTexts = document.querySelectorAll('.helper-text');
 
     const backButton = document.getElementById('back-btn');
     const loginLink = document.querySelector('.login-link');
+
+    // 프로필 사진 업로드 시 uploaded class add
+    function profileImageUploaded(event) {
+        const fileInput = event.target;
+        const imageElement = document.getElementById('profileImage');
+
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                imageElement.src = e.target.result; // 이미지 미리보기
+                profileCircle.classList.add('uploaded'); // uploaded 클래스 추가
+            };
+
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    }
+
+    profileImage.addEventListener('change', profileImageUploaded);
 
     function validateEmail(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
