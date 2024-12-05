@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
     nicknameInput.addEventListener('blur', handleValidation);
 
     function navigateToLogin() {
-        window.location.href = 'login.html';
+        window.location.href = '/users/login';
     }
 
     backButton.addEventListener('click', navigateToLogin);

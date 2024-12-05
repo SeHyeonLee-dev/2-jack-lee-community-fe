@@ -43,10 +43,15 @@ dropdownLinks.forEach((link) => {
 
         switch (linkText) {
             case '회원정보수정':
-                window.location.href = 'user-modify.html';
+                // TODOS: 로그인 상태에서 userId 가져와서 페이지 이동해야함
+                // window.location.href = `/users/${}/edit`;
+                window.location.href = `/users/59600308-32ce-4828-bab3-a06160446544/edit`;
+                console.log('로그인 구현 필요 에러!!');
                 break;
             case '비밀번호수정':
-                window.location.href = 'user-pw-modify.html';
+                //window.location.href = `/users/${}/edit-pw`;
+                window.location.href = `/users/59600308-32ce-4828-bab3-a06160446544/edit-pw`;
+                console.log('로그인 구현 필요 에러!!');
                 break;
             case '로그아웃':
                 // TODOS: 로그아웃 로직 추가

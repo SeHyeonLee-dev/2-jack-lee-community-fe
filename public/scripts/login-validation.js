@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function navigateToSignup() {
-        window.location.href = 'signup.html';
+        window.location.href = '/users/register';
     }
 
     // 이메일 유효성 검사

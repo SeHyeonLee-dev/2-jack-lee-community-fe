@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 뒤로가기 버튼 클릭시 게시글 페이지 이동
     backButton.addEventListener('click', (event) => {
         event.preventDefault();
-        window.location.href = 'post-list.html';
+        window.location.href = '/posts';
     });
 
     // 제목 최대 26자 제한 설정
@@ -58,25 +58,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 게시글 작성 API 요청
         try {
-            const postResponse = await fetch('http://localhost:3000/posts', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    post_title,
-                    post_content,
-                }),
-            });
+            const postResponse = await fetch(
+                'http://localhost:3000/api/posts',
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        post_title,
+                        post_content,
+                    }),
+                },
+            );
 
             const result = await postResponse.json();
             const postId = result.data.post_id;
 
             // 게시글 이미지 업로드 API 요청
             if (imageInput.files.length > 0) {
+                const file = imageInput.files[0];
                 const formData = new FormData();
-                formData.append('post_image', imageInput.files[0]);
+                formData.append('post_image', file);
+                formData.append('post_image_name', file.name);
+                console.log(formData);
 
                 const uploadResponse = await fetch(
-                    `http://localhost:3000/posts/${postId}/post-image`,
+                    `http://localhost:3000/api/posts/${postId}/post-image`,
                     {
                         method: 'POST',
                         body: formData,
@@ -96,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 게시글 작성 성공 시 게시글 목록 페이지 이동
             if (confirm('게시글을 작성했습니다.')) {
-                window.location.href = 'post-list.html'; // 확인 버튼 클릭 시 이동
+                window.location.href = '/posts'; // 확인 버튼 클릭 시 이동
             }
         } catch (error) {
             console.error('Error:', error);

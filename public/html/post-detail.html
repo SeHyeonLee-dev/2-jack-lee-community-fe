@@ -1,466 +1,500 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jack's community</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="roboto.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_back_ios" />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Jack's community</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="roboto.css" />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_back_ios"
+        />
 
-    <style>
-        /* reset 코드 */
-        * {
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background-color: #F4F5F7;
-        }
-        button {
-            border: 0;
-            background-color: transparent;
-        }
-        a {
-            text-decoration: none;
-            color: black;
-        }
+        <style>
+            /* reset 코드 */
+            * {
+                padding: 0;
+                margin: 0;
+                box-sizing: border-box;
+            }
+            body {
+                background-color: #f4f5f7;
+            }
+            button {
+                border: 0;
+                background-color: transparent;
+                cursor: pointer;
+            }
+            a {
+                text-decoration: none;
+                color: black;
+            }
 
-        /* 헤더 CSS */
-        header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 104px;
-            border-bottom: 1px solid #000;
-        }
-        header .header-wrap {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            min-width: 512px;
-        }
-        header .back-btn {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            padding: 4px;
-        }
-        header #title {
-            width: 206px;
-            height: 32px;
-            font-weight: 400;
-            font-size: 32px;
-        }
-        header .profile {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-        }
-    
-        /* 컨텐츠 부분 CSS */
-        section {
-            display: flex;
-            justify-content: center; 
-            align-items: center;
-            width: 100%;
-            height: 100vh; 
-            padding: 20px;
-            background-color: #F4F5F7;
-        }
-        .post-wrap {
-            display: flex;
-            align-items: center;
-            flex-direction: column;
-            width: 100%;
-            max-width: 592px; 
-            height: 100%;
-            background-color: #F4F5F7;
-        }
+            /* 헤더 CSS */
+            header {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 104px;
+                border-bottom: 1px solid #000;
+            }
+            header .header-wrap {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                min-width: 512px;
+            }
+            header .back-btn {
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                padding: 4px;
+            }
+            header #title {
+                width: 206px;
+                height: 32px;
+                font-weight: 400;
+                font-size: 32px;
+            }
+            header .profile {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+            }
 
-        /* 게시글 정보 CSS */
-        .post-info {
-            width: 100%;
-            max-width: 596px;
-            height: 127px;
-            border-bottom: 1px #D9D9D9 solid;
-            display: flex;
-            flex-direction: column;
-            padding: 24px;
-        }
-        .post-title {
-            margin-bottom: 8px;
-        }
-        .post-nav {
-            display: flex;
-            justify-content: space-between;
-        }
-        .post-nav-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .post-nav-left #post-profile {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+            /* 컨텐츠 부분 CSS */
+            section {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 100vh;
+                padding: 20px;
+                background-color: #f4f5f7;
+            }
+            .post-wrap {
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+                width: 100%;
+                max-width: 592px;
+                height: 100%;
+                background-color: #f4f5f7;
+            }
 
-        }
-        .post-nav-left #post-writer {
-            font-weight: 700;
-            font-size: 15px;
-            line-height: 19.5px;
-        }
-        .post-nav-left #post-time {
-            font-weight: 400;
-            font-size: 14px;
-            line-height: 18.2px;
-            margin-left: 10px;
-        }
-        .post-nav-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .post-nav-right button {
-            border: 1px #D9D9D9 solid;
-            border-radius: 8px;
-            padding: 2px 8px;
-            color: #000;
-        }
+            /* 게시글 정보 CSS */
+            .post-info {
+                width: 100%;
+                max-width: 596px;
+                height: 127px;
+                border-bottom: 1px #d9d9d9 solid;
+                display: flex;
+                flex-direction: column;
+                padding: 24px;
+            }
+            .post-title-box {
+                margin-bottom: 8px;
+            }
+            .post-nav {
+                display: flex;
+                justify-content: space-between;
+            }
+            .post-nav-left {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .post-nav-left #post-profile {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+            }
+            .post-nav-left #post-writer {
+                font-weight: 700;
+                font-size: 15px;
+                line-height: 19.5px;
+            }
+            .post-nav-left #post-time {
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 18.2px;
+                margin-left: 10px;
+            }
+            .post-nav-right {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .post-nav-right button {
+                border: 1px #d9d9d9 solid;
+                border-radius: 8px;
+                padding: 2px 8px;
+                color: #000;
+            }
 
-        /* 게시글 이미지와 텍스트 */
-        .post-contents {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #F4F5F7;
-            width: 100%;
-            max-width: 544px;
-            min-height: 695px;
-            margin: 8px auto;
-            padding: 24px;
-            border-bottom: 1px #D9D9D9 solid;
-        }
-        .post-image {
-            width: 100%;
-            background-color: #D9D9D9;
-            flex-grow: 2;
-            margin-bottom: 24px;
-        }
-        .post-text {
-            width: 100%;
-            background-color: #F4F5F7;
-            flex-grow: 1.5;
-        }
-        .post-info-cards {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            width: 70%;
-            background-color: #F4F5F7;
-            flex-grow: 1;
-        }
-        .post-info-cards button {
-            width: 116px;
-            height: 77px;
-            background-color: #D9D9D9;
-            border-radius: 16px;
-            padding: 12px 20px;
-            
-        }
-        .post-info-cards button p {
-            font-weight: 700;
-            font-size: 16px;
-            line-height: 25.04px;
-        }
+            /* 게시글 이미지와 텍스트 */
+            .post-contents {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                background-color: #f4f5f7;
+                width: 100%;
+                max-width: 600px;
+                min-height: 864px;
+                margin: 8px auto;
+                padding: 24px;
+                border-bottom: 1px #d9d9d9 solid;
+            }
+            .post-images {
+                width: 100%;
+                background-color: #d9d9d9;
+                flex-grow: 2;
+                margin-bottom: 24px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                overflow: hidden;
+            }
+            #post-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover; /* 이미지를 부모 div 크기에 맞게 조정 */
+            }
+            .post-text-box {
+                width: 100%;
+                background-color: #f4f5f7;
+                flex-grow: 1.5;
+            }
+            .post-info-cards {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                width: 70%;
+                background-color: #f4f5f7;
+                flex-grow: 1;
+            }
+            .post-info-cards button {
+                width: 116px;
+                height: 77px;
+                background-color: #d9d9d9;
+                border-radius: 16px;
+                padding: 12px 20px;
+            }
+            .post-info-cards button p {
+                font-weight: 700;
+                font-size: 16px;
+                line-height: 25.04px;
+            }
 
-        /* 댓글 */
-        .comment-section {
-            width: 595px;
-            height: 205px;
-            background-color: #fff;
-            padding: 0px;
-            display: flex;
-            border-radius: 8px;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        /* 댓글 입력 필드 */
-        #comment-input {
-            width: 100%;
-            height: 70%;
-            padding: 20px;
-            margin-top: 10px;
-            font-size: 16px;
-            border: 0;
-            border-bottom: 1px #D9D9D9 solid;
-            resize: none;
-            box-sizing: border-box;
-        }
+            /* 댓글 */
+            .comment-section {
+                width: 595px;
+                height: 205px;
+                background-color: #fff;
+                padding: 0px;
+                display: flex;
+                border-radius: 8px;
+                flex-direction: column;
+                gap: 10px;
+            }
 
-        #comment-input::placeholder {
-            color: #000;
-        }
-        
-        /* 댓글 등록 버튼 */
-        #submit-btn {
-            width: 138px;
-            height: 39px;
-            margin-right: 4px;
-            margin-bottom: 10px;
-            align-self: flex-end;
-            padding: 10px 20px;
-            background-color: #ACA0EB;
-            color: white;
-            border: none;
-            border-radius: 16px;
-            cursor: pointer;
-            
-        }
-        
-        #submit-btn:hover {
-            background-color: #b091f0;
-        }
-        
-        /* 댓글 목록 */
-        .comment-list {
-            width: 100%;
-            padding: 20px;
-            margin-top: 20px;
-            border: 0;
-        }
-        
-        /* 댓글 하나의 스타일 */
-        .comment {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-        }
-        
-        .comment img {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-        
-        .comment-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .comment-header {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-        
-        .comment-header h4 {
-            margin: 0;
-        }
-        
-        .comment-header small {
-            color: gray;
-            font-size: 12px;
-        }
-        
-        .comment-text {
-            margin: 5px 0;
-            font-size: 14px;
-        }
-        
-        .comment-actions {
-            margin-left: auto;
-            display: flex;
-            gap: 10px;
-        }
-        
-        .comment-actions button {
-            background: none;
-            border: 1px #D9D9D9 solid;
-            border-radius: 8px;
-            padding: 2px 12px;
-            color: #007bff;
-            font-size: 12px;
-            color: #000;
-            cursor: pointer;
-        }
-        
-        .comment-actions button:hover {
-            text-decoration: underline;
-        }
-        
-        /* 삭제 모달 스타일 */
-        .modal {
-            display: none; /* 기본적으로 숨김 */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: transparent;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            row-gap: 30px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            width: 408px;
-            height: 242px;
-        }
-        .modal-content p {
-            font-weight: 700;
-            font-size: 24px;
-            line-height: 28.64px;
-        }
-        .modal-content button {
-            width: 127px;
-            height: 44px;
-        }
-        .confirm-btn {
-            background-color: #C4A5FA;
-            color: #000;
-            padding: 8px 16px;
-            margin-right: 10px;
-            border: none;
-            cursor: pointer;
-            border-radius: 12px;
-        }
-        .cancel-btn {
-            background-color: #000;
-            color: #fff;
-            padding: 8px 16px;
-            border: none;
-            cursor: pointer;
-            border-radius: 12px;
-        }
-    </style>
-</head>
-<body>
-    <!-- 게시글 삭제 모달 창 -->
-    <div id="postDeleteModal" class="modal">
-        <div class="modal-content">
-            <p>게시글을 삭제하시겠습니까?</p>
-            <small>삭제한 내용은 복구 할 수 없습니다.</small>
-            <div class="modal-btn">
-                <button id="cancel-btn-id" class="cancel-btn">취소</button>
-                <button id="confirm-btn-id" class="confirm-btn">확인</button>
-            </div>
-        </div>
-    </div>
-    <!-- 댓글 삭제 모달 창 -->
-    <div id="commentDeleteModal" class="modal">
-        <div class="modal-content">
-            <p>댓글을 삭제하시겠습니까?</p>
-            <small>삭제한 내용은 복구 할 수 없습니다.</small>
-            <div class="modal-btn">
-                <button id="cancelDelete" class="cancel-btn">취소</button>
-                <button id="confirmDelete" class="confirm-btn">확인</button>
-            </div>
-        </div>
-    </div>
-    <!-- 헤더 HTML -->
-    <header>
-        <div class="header-wrap"> 
-            <div>
-                <button>
-                    <a href=""><span class="material-symbols-outlined back-button back-btn">arrow_back_ios</span></a>
-                </button>
-            </div>
-            <div>
-                <a href="" id="title"><p>Jack's community</p></a>
-            </div>
-            <div>
-                <a href=""><img class="profile" src="/images/징징이커피.JPG" alt="프로필 이미지"></a>
-            </div>   
-        </div>
-    </header>
+            /* 댓글 입력 필드 */
+            #comment-input {
+                width: 100%;
+                height: 70%;
+                padding: 20px;
+                margin-top: 10px;
+                font-size: 16px;
+                border: 0;
+                border-bottom: 1px #d9d9d9 solid;
+                resize: none;
+                box-sizing: border-box;
+            }
 
-    <!-- 컨텐츠 부분 HTML -->
-    <section>
-        <div class="post-wrap">
-            <!-- 게시글 상단 -->
-            <div class="post-info">
-                <div class="post-title">
-                    <h3>제목 1</h3>
+            #comment-input::placeholder {
+                color: #000;
+            }
+
+            /* 댓글 등록 버튼 */
+            #comment-submit-btn,
+            #comment-modify {
+                width: 138px;
+                height: 39px;
+                margin-right: 4px;
+                margin-bottom: 10px;
+                align-self: flex-end;
+                padding: 10px 20px;
+                background-color: #aca0eb;
+                color: white;
+                border: none;
+                border-radius: 16px;
+                cursor: pointer;
+            }
+
+            #comment-submit-btn:hover {
+                background-color: #b091f0;
+            }
+
+            /* 댓글 목록 */
+            .comment-list {
+                width: 100%;
+                padding: 20px;
+                margin-top: 20px;
+                border: 0;
+            }
+
+            /* 댓글 하나의 스타일 */
+            .comment {
+                display: flex;
+                align-items: flex-start;
+                margin-bottom: 15px;
+                padding-bottom: 15px;
+            }
+
+            .comment img {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                margin-right: 10px;
+                margin-bottom: 10px;
+            }
+
+            .comment-content {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .comment-header {
+                display: flex;
+                gap: 20px;
+                align-items: center;
+            }
+
+            .comment-header h4 {
+                margin: 0;
+            }
+
+            .comment-header small {
+                color: gray;
+                font-size: 12px;
+            }
+
+            .comment-text {
+                margin: 5px 0;
+                font-size: 14px;
+            }
+
+            .comment-actions {
+                margin-left: auto;
+                display: flex;
+                gap: 10px;
+            }
+
+            .comment-actions button {
+                background: none;
+                border: 1px #d9d9d9 solid;
+                border-radius: 8px;
+                padding: 2px 12px;
+                color: #007bff;
+                font-size: 12px;
+                color: #000;
+                cursor: pointer;
+            }
+
+            .comment-actions button:hover {
+                text-decoration: underline;
+            }
+
+            /* 삭제 모달 스타일 */
+            .modal {
+                display: none; /* 기본적으로 숨김 */
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                background-color: transparent;
+                justify-content: center;
+                align-items: center;
+            }
+            .modal-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                row-gap: 30px;
+                background-color: #fff;
+                padding: 20px;
+                border-radius: 12px;
+                text-align: center;
+                width: 408px;
+                height: 242px;
+            }
+            .modal-content p {
+                font-weight: 700;
+                font-size: 24px;
+                line-height: 28.64px;
+            }
+            .modal-content button {
+                width: 127px;
+                height: 44px;
+            }
+            .confirm-btn {
+                background-color: #c4a5fa;
+                color: #000;
+                padding: 8px 16px;
+                margin-right: 10px;
+                border: none;
+                cursor: pointer;
+                border-radius: 12px;
+            }
+            .cancel-btn {
+                background-color: #000;
+                color: #fff;
+                padding: 8px 16px;
+                border: none;
+                cursor: pointer;
+                border-radius: 12px;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- 게시글 삭제 모달 창 -->
+        <div id="postDeleteModal" class="modal">
+            <div class="modal-content">
+                <p>게시글을 삭제하시겠습니까?</p>
+                <small>삭제한 내용은 복구 할 수 없습니다.</small>
+                <div class="modal-btn">
+                    <button id="cancel-btn-id" class="cancel-btn">취소</button>
+                    <button id="confirm-btn-id" class="confirm-btn">
+                        확인
+                    </button>
                 </div>
-                <div class="post-nav">
-                    <div class="post-nav-left">
-                        <img id="post-profile" src="/images/징징이커피.JPG">
-                        <p id="post-writer">더미 작성자1</p>
-                        <p id="post-time">2024-11-04 15:58:34</p>
+            </div>
+        </div>
+        <!-- 댓글 삭제 모달 창 -->
+        <div id="commentDeleteModal" class="modal">
+            <div class="modal-content">
+                <p>댓글을 삭제하시겠습니까?</p>
+                <small>삭제한 내용은 복구 할 수 없습니다.</small>
+                <div class="modal-btn">
+                    <button id="cancelDelete" class="cancel-btn">취소</button>
+                    <button id="confirmDelete" class="confirm-btn">확인</button>
+                </div>
+            </div>
+        </div>
+        <!-- 헤더 HTML -->
+        <header>
+            <div class="header-wrap">
+                <div>
+                    <button>
+                        <a href="http://localhost:3000/posts"
+                            ><span
+                                class="material-symbols-outlined back-button back-btn"
+                                >arrow_back_ios</span
+                            ></a
+                        >
+                    </button>
+                </div>
+                <div>
+                    <a href="" id="title"><p>Jack's community</p></a>
+                </div>
+                <div>
+                    <a href=""
+                        ><img
+                            class="profile"
+                            src="/images/징징이커피.JPG"
+                            alt="프로필 이미지"
+                    /></a>
+                </div>
+            </div>
+        </header>
+
+        <!-- 컨텐츠 부분 HTML -->
+        <section>
+            <div class="post-wrap">
+                <!-- 게시글 상단 -->
+                <div class="post-info">
+                    <div class="post-title-box">
+                        <h3 id="post-title"></h3>
                     </div>
-                    <div class="post-nav-right">
-                        <button id="post-modify">수정</button>
-                        <button id="post-delete">삭제</button>
+                    <div class="post-nav">
+                        <div class="post-nav-left">
+                            <img id="post-profile" src="" />
+                            <p id="post-writer">더미 작성자1</p>
+                            <p id="post-time">2024-11-04 15:58:34</p>
+                        </div>
+                        <div class="post-nav-right">
+                            <button id="post-modify">수정</button>
+                            <button id="post-delete">삭제</button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- 게시글 중단 -->
-            <div class="post-contents">
-                <div class="post-image">
-                    <!-- 여기에 이미지 추가 -->
+                <!-- 게시글 중단 -->
+                <div class="post-contents">
+                    <div class="post-images">
+                        <img src="" id="post-image" />
+                    </div>
+                    <div class="post-text-box">
+                        <blockquote id="post-text">
+                            Lorem Ipsum is simply dummy text of the printing and
+                            typesetting industry. Lorem Ipsum has been the
+                            industry's standard dummy text ever since the 1500s,
+                            when an unknown printer took a galley of type and
+                            scrambled it to make a type specimen book. It has
+                            survived not only five centuries, but also the leap
+                            into electronic typesetting, remaining essentially
+                            unchanged. It was popularised in the 1960s with the
+                            release of Letraset sheets containing Lorem Ipsum
+                            passages, and more recently with desktop publishing
+                            software like Aldus PageMaker including versions of
+                            Lorem Ipsum.
+                        </blockquote>
+                    </div>
+                    <div class="post-info-cards">
+                        <button class="post-like">
+                            <p id="post-like-count">123</p>
+                            <p>좋아요수</p>
+                        </button>
+                        <button class="post-views">
+                            <p id="post-views-count">123</p>
+                            <p>조회수</p>
+                        </button>
+                        <button class="post-comment">
+                            <p id="post-comment-count">123</p>
+                            <p>댓글</p>
+                        </button>
+                    </div>
                 </div>
-                <div class="post-text">
-                    <blockquote>
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                        when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
-                        It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. 
-                        It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, 
-                        and more recently with desktop publishing software like Aldus PageMaker including 
-                        versions of Lorem Ipsum.
-                    </blockquote>
-                </div>
-                <div class="post-info-cards">
-                    <button class="post-like">
-                        <p>123</p>
-                        <p>좋아요수</p>
-                    </button>
-                    <button class="post-views">
-                        <p>123</p>
-                        <p>조회수</p>
-                    </button>
-                    <button class="post-comment">
-                        <p>123</p>
-                        <p>댓글</p>
-                    </button>
-                </div>
-            </div>
 
-            <!-- 게시글 하단 -->
-            <div class="comment-section">
-                <textarea id="comment-input" placeholder="댓글을 남겨주세요!"></textarea>
-                <button id="submit-btn">댓글 등록</button>
+                <!-- 게시글 하단 -->
+                <div class="comment-section">
+                    <textarea
+                        id="comment-input"
+                        placeholder="댓글을 남겨주세요!"
+                    ></textarea>
+                    <button id="comment-submit-btn">댓글 등록</button>
+                </div>
+                <div class="comment-list">
+                    <!-- 댓글들이 여기에 추가됨 -->
+                </div>
             </div>
-            <div class="comment-list">
-                <!-- 댓글들이 여기에 추가됨 -->
-            </div>
-            
-        </div>
-    </section>
+        </section>
 
-    <script src="/js/post-detail-script.js"></script>
-</body>
+        <script defer src="/scripts/post-detail-script.js"></script>
+    </body>
 </html>

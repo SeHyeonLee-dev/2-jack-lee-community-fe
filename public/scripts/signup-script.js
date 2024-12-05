@@ -13,16 +13,19 @@ registerForm.addEventListener('submit', async (e) => {
 
     try {
         // 회원가입 API 요청
-        const response = await fetch('http://localhost:3000/users/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                email,
-                password,
-                re_password,
-                nickname,
-            }),
-        });
+        const response = await fetch(
+            'http://localhost:3000/api/users/register',
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email,
+                    password,
+                    re_password,
+                    nickname,
+                }),
+            },
+        );
 
         const result = await response.json();
 
@@ -34,7 +37,7 @@ registerForm.addEventListener('submit', async (e) => {
             formData.append('profile_image', profile_image.files[0]);
 
             const uploadResponse = await fetch(
-                `http://localhost:3000/users/${userId}/profile-image`,
+                `http://localhost:3000/api/users/${userId}/profile-image`,
                 {
                     method: 'POST',
                     body: formData,
@@ -56,7 +59,7 @@ registerForm.addEventListener('submit', async (e) => {
 
         // 회원가입 성공 시 게시글 목록 페이지 이동
         if (confirm('회원가입에 성공했습니다.')) {
-            window.location.href = 'post-list.html'; // 확인 버튼 클릭 시 이동
+            window.location.href = '/posts'; // 확인 버튼 클릭 시 이동
         }
     } catch (error) {
         console.error('Error:', error);
