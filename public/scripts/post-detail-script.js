@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const postId = await getPostIdFromUrl();
         const posts = await fetchPostData(postId); // await 안해주면 promise 타입이 됨
         const postData = posts.data;
+        console.log(postData);
 
         if (postData) {
             document.getElementById('post-title').innerText =
@@ -202,6 +203,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     { method: 'DELETE' },
                 );
 
+                await fetch(
+                    `http://localhost:3000/api/posts/${postId}/comments_decrease`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                    },
+                );
+
                 if (!response.ok) throw new Error('댓글 삭제 에러');
 
                 // 댓글 삭제 성공 시 DOM에서 제거
@@ -229,6 +238,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             const commentInput = document.getElementById('comment-input');
             const commentText = commentInput.value;
             const postId = getPostIdFromUrl();
+
+            // 댓글 수 렌더링
+            getCommentsFromServer();
 
             if (commentText.trim() === '') {
                 alert('댓글 내용을 입력해주세요.');
@@ -301,4 +313,124 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             }
         });
+
+    // 좋아요 클릭 이벤트
+    document.querySelector('.post-like').addEventListener('click', async () => {
+        const postId = getPostIdFromUrl();
+        try {
+            await fetch(`http://localhost:3000/api/posts/${postId}/likes_add`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            const response = await fetch(
+                `http://localhost:3000/api/posts/${postId}/likes`,
+                {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                },
+            );
+
+            const responseJson = await response.json();
+            const likes = await responseJson.data;
+
+            document.getElementById('post-like-count').innerText = likes;
+        } catch (e) {
+            console.error('좋아요 수 증가 에러:', e);
+        }
+    });
+
+    // 조회 수 렌더링
+    const getViewsFromServer = async () => {
+        const postId = getPostIdFromUrl();
+        try {
+            await fetch(`http://localhost:3000/api/posts/${postId}/views`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            const response = await fetch(
+                `http://localhost:3000/api/posts/${postId}/views`,
+                {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                },
+            );
+
+            const responseJson = await response.json();
+
+            const views = await responseJson.data;
+
+            document.getElementById('post-views-count').innerText = views;
+        } catch (e) {
+            console.error('조회 수 증가 에러:', e);
+        }
+    };
+    getViewsFromServer();
+
+    // 댓글 수 증가
+    const addCommentsCount = async () => {
+        const postId = getPostIdFromUrl();
+        try {
+            await fetch(
+                `http://localhost:3000/api/posts/${postId}/comments_add`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                },
+            );
+        } catch (e) {
+            console.error('댓글 수 증가 에러:', e);
+        }
+    };
+
+    // 댓글 수 감소
+    const decreaseCommentsCount = async () => {
+        const postId = getPostIdFromUrl();
+        try {
+            await fetch(
+                `http://localhost:3000/api/posts/${postId}/comments_decrease`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                },
+            );
+        } catch (e) {
+            console.error('댓글 수 감소 에러:', e);
+        }
+    };
+
+    document
+        .getElementById('comment-submit-btn')
+        .addEventListener('click', () => {
+            addCommentsCount();
+            getCommentsFromServer();
+        });
+
+    document.getElementById('confirmDelete').addEventListener('click', () => {
+        getCommentsFromServer();
+    });
+
+    // 댓글 수 렌더링
+    const getCommentsFromServer = async () => {
+        const postId = getPostIdFromUrl();
+        try {
+            const response = await fetch(
+                `http://localhost:3000/api/posts/${postId}/comments_count`,
+                {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                },
+            );
+
+            const responseJson = await response.json();
+
+            const comments = await responseJson.data;
+
+            document.getElementById('post-comment-count').textContent =
+                comments;
+        } catch (e) {
+            console.error('error:', e);
+        }
+    };
 });
