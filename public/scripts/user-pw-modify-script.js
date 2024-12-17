@@ -1,99 +1,63 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const writeBtn = document.getElementById('write-btn');
+    const passwordInput = document.querySelector(
+        'input[placeholder="비밀번호를 입력하세요"]',
+    );
+    const confirmPasswordInput = document.querySelector(
+        'input[placeholder="비밀번호를 한번 더 입력하세요"]',
+    );
+    const helperTextPassword = passwordInput.nextElementSibling;
+    const helperTextConfirmPassword = confirmPasswordInput.nextElementSibling;
+    const modifyButton = document.getElementById('user-pw-modify-btn');
 
-    function navigateToPostAdd() {
-        window.location.href = '/posts/add';
-    }
+    // 초기 버튼 상태 비활성화
+    modifyButton.disabled = true;
 
-    // 게시글 작성 버튼 클릭 시 작성 페이지 이동
-    writeBtn.addEventListener('click', () => {
-        navigateToPostAdd();
-    });
+    const validatePassword = (password) => {
+        const passwordRegex =
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-={}\[\]:";'<>?,.\/]).{8,20}$/;
+        return passwordRegex.test(password);
+    };
 
-    writeBtn.addEventListener('mouseout', () => {
-        writeBtn.style.backgroundColor = '#ACA0EB';
-    });
+    const updateHelperText = () => {
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
 
-    writeBtn.addEventListener('mouseover', () => {
-        writeBtn.style.backgroundColor = '#7F6AEE';
-    });
-
-    // 데이터 가져오는 함수
-    async function fetchPosts() {
-        try {
-            const response = await fetch('http://localhost:3000/api/posts');
-            if (!response.ok) {
-                throw new Error('게시글을 불러올 수 없음');
-            }
-            const jsonPosts = await response.json();
-            const postArray = Object.values(jsonPosts.data); // 객체를 배열로 변환
-
-            renderPosts(postArray);
-        } catch (error) {
-            console.error('Fetch error:', error);
+        if (!password) {
+            helperTextPassword.textContent = '* 비밀번호를 입력해주세요';
+        } else if (!validatePassword(password)) {
+            helperTextPassword.textContent =
+                '* 비밀번호는 8자 이상, 20자 이하이며 대문자, 소문자, 숫자, 특수문자를 각각 최소 1개 포함해야 합니다';
+        } else {
+            helperTextPassword.textContent = '';
         }
-    }
 
-    // 게시글 생성 함수
-    function renderPosts(posts) {
-        const postList = document.getElementById('post-list');
-
-        // foreach가 타입 오류때문에 안되서 for문으로 변경
-        for (let i = 0; i < posts.length; i++) {
-            const post = posts[i];
-            const postCard = document.createElement('div');
-            postCard.className = 'post-card';
-            postCard.style.cursor = 'pointer';
-            console.log(post);
-
-            postCard.innerHTML = `
-            <div class="post-title">${post.post_title}</div>
-            <div class="post-info">
-                <div class="post-info-left">
-                        <div class="post-info-item">
-                        <p>좋아요</p><span>${post.likes}</span>
-                    </div>
-                    <div class="post-info-item">
-                        <p>댓글</p><span>${post.comments}</span>
-                    </div>
-                    <div class="post-info-item">
-                        <p>조회수</p><span>${post.views}</span>
-                    </div>
-                </div>
-                <div class="post-info-right">
-                    <p>${post.created_at}</p>
-                </div>
-            </div>
-            <div class="post-info-writer">
-                <div class="writer-profile">
-                    <img class="writer-profile-img" src="${post.author.profile_image}" alt="작성자 이미지">
-                </div>
-                <div class="writer-name">
-                    <p><b>${post.author.name}</b></p>
-                </div>
-            </div>
-            `;
-
-            // 카드 클릭 시 해당 게시글 상세 페이지 이동
-            postCard.addEventListener('click', () => {
-                window.location.href = `/posts/${post.post_id}`;
-            });
-
-            postList.appendChild(postCard);
+        if (!confirmPassword) {
+            helperTextConfirmPassword.textContent =
+                '* 비밀번호를 한번 더 입력해주세요';
+        } else if (password !== confirmPassword) {
+            helperTextConfirmPassword.textContent = '* 비밀번호와 다릅니다';
+        } else {
+            helperTextConfirmPassword.textContent = '';
         }
-    }
 
-    await fetchPosts();
+        // 버튼 활성화 상태 업데이트
+        if (validatePassword(password) && password === confirmPassword) {
+            modifyButton.disabled = false;
+            modifyButton.style.backgroundColor = '#7f6aee'; // 활성화된 색상
+            modifyButton.style.cursor = 'pointer';
+        } else {
+            modifyButton.disabled = true;
+            modifyButton.style.backgroundColor = '#aca0eb'; // 비활성화된 색상
+            modifyButton.style.cursor = 'not-allowed';
+        }
+    };
+
+    // 이벤트 리스너 추가
+    passwordInput.addEventListener('input', updateHelperText);
+    confirmPasswordInput.addEventListener('input', updateHelperText);
 
     const profileImage = document.getElementById('profile-image');
     const profileNickname = document.getElementById('profile-nickname');
-
-    document
-        .getElementById('profile-nickname')
-        .addEventListener('click', () => {
-            window.location.href = `/users/login`;
-        });
-
     // 로그인 상태에 따라 프로필 업데이트
     try {
         const response = await fetch(
@@ -102,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         );
         const result = await response.json();
 
-        if (result && result.nickname) {
+        if (result) {
             const { nickname, profile_image } = result;
             profileImage.src = profile_image;
             profileNickname.textContent = 'Your NickName: ' + nickname;
@@ -143,6 +107,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         // 로그아웃 처리 함수
         async function handleLogout() {
+            console.log('test');
             try {
                 const logoutResponse = await fetch(
                     'http://localhost:3000/api/auths/logout',
@@ -158,8 +123,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 // 로그아웃 성공 시 메인 페이지로 리다이렉트
                 window.location.href = '/posts';
-
-                profileNickname.textContent = '로그인 해주세요';
             } catch (error) {
                 console.error('Error during logout:', error);
                 alert('로그아웃에 실패했습니다. 다시 시도해주세요.');

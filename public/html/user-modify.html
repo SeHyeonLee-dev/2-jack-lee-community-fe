@@ -14,7 +14,6 @@
             href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
             rel="stylesheet"
         />
-        <link rel="stylesheet" href="roboto.css" />
     </head>
     <style>
         /* reset 코드 */
@@ -60,12 +59,20 @@
             font-weight: 400;
             font-size: 32px;
         }
-        header .profile {
+        header #profile-image {
             width: 36px;
             height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
+        }
+
+        #profile-nickname {
+            font-size: 20px;
+            font-weight: 700;
+            width: max-content;
+            color: #000;
+            margin-top: 16px;
         }
 
         /* 드롭 다운 */
@@ -78,6 +85,7 @@
             top: -14px;
             left: 160px;
         }
+
         .dropbtn_icon {
             font-family: 'Material Icons';
         }
@@ -137,7 +145,7 @@
             margin-top: 8px;
             margin-right: 75%;
         }
-        .user-modify-profile-image {
+        #user-modify-profile-image {
             width: 149px;
             height: 149px;
             border-radius: 50%;
@@ -287,15 +295,14 @@
                 <div>
                     <a href="" id="title"><p>Jack's community</p></a>
                 </div>
-                <!-- 프로필 이미지 클릭 시 드롭다운 -->
+                <!-- 프로필 이미지 및 닉네임 -->
                 <div class="dropdown">
                     <span class="dropbtn">
-                        <img
-                            class="profile"
-                            src="../images/고양이.jpg"
-                            alt="프로필 이미지"
-                        />
+                        <img id="profile-image" src="" alt="프로필 이미지" />
+                        <span id="profile-nickname">로그인 해주세요</span>
                     </span>
+
+                    <!-- 드롭다운 메뉴 -->
                     <div class="dropdown-content">
                         <a href="#">회원정보수정</a>
                         <a href="#">비밀번호수정</a>
@@ -312,8 +319,8 @@
                     <h2>회원정보수정</h2>
                     <p>프로필 사진*</p>
                     <img
-                        class="user-modify-profile-image"
-                        src="../images/고양이.jpg"
+                        id="user-modify-profile-image"
+                        src=""
                         alt="프로필 이미지"
                     />
                 </div>
@@ -338,6 +345,6 @@
             </div>
         </section>
 
-        <script defer src="../scripts/user-modify-script.js"></script>
+        <script defer src="/scripts/user-modify-script.js"></script>
     </body>
 </html>

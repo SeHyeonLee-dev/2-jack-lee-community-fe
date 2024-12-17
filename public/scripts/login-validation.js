@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordInput = document.getElementById('password');
     const helperText = document.querySelector('.pw-helper');
     const loginButton = document.getElementById('login-btn');
-    const signupButton = document.getElementById('signup-btn');
 
     function validateEmail(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -54,15 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function navigateToSignup() {
-        window.location.href = '/users/register';
-    }
-
     // 이메일 유효성 검사
     emailInput.addEventListener('input', handleValidation);
     // 비밀번호 유효성 검사
     passwordInput.addEventListener('input', handleValidation);
-
-    // 회원가입 버튼 클릭 시 회원가입 페이지 이동
-    signupButton.addEventListener('click', navigateToSignup);
 });

@@ -40,16 +40,6 @@
                 z-index: 1000;
             }
 
-            .header-box {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 100%;
-                max-width: 800px;
-                position: relative;
-                margin: 10px;
-            }
-
             .title {
                 flex-grow: 1;
                 text-align: center;
@@ -184,19 +174,101 @@
                 font-size: 0.95em;
                 color: #333;
             }
+
+            /* 헤더 수정 */
+            header {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 104px;
+                border-bottom: 1px solid #000;
+            }
+            header .header-wrap {
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-width: 592px;
+            }
+            header #title {
+                width: 206px;
+                height: 32px;
+                font-weight: 400;
+                font-size: 32px;
+            }
+            header #profile-image {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+            }
+
+            #profile-nickname {
+                font-size: 20px;
+                font-weight: 700;
+                width: max-content;
+                color: #000;
+                margin-top: 16px;
+            }
+
+            /* 드롭 다운 */
+            .dropdown {
+                position: relative;
+                display: inline-block;
+            }
+            .dropdown span {
+                position: absolute;
+                top: -14px;
+                left: 160px;
+            }
+
+            .dropbtn_icon {
+                font-family: 'Material Icons';
+            }
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                z-index: 1; /*다른 요소들보다 앞에 배치*/
+                font-weight: 400;
+                background-color: #e9e9e9;
+                min-width: 115px;
+                min-height: 105px;
+                margin-top: 30px;
+                margin-left: 80px;
+            }
+            .dropdown-content a {
+                display: block;
+                text-decoration: none;
+                color: rgb(37, 37, 37);
+                font-size: 12px;
+                padding: 12px 20px;
+                text-align: center;
+            }
         </style>
     </head>
     <body>
         <header>
-            <div class="header-box">
-                <h1 class="title roboto-light">jack's community</h1>
-                <div class="image-box">
-                    <a href=""
-                        ><img
-                            class="profile"
-                            src="../images/고양이.jpg"
-                            alt="프로필 이미지"
-                    /></a>
+            <div class="header-wrap">
+                <div>
+                    <h1 class="title">jack's community</h1>
+                </div>
+                <!-- 프로필 이미지 및 닉네임 -->
+                <div class="dropdown">
+                    <span class="dropbtn">
+                        <img id="profile-image" src="" alt="프로필 이미지" />
+                        <span id="profile-nickname" style="cursor: pointer"
+                            >로그인 해주세요</span
+                        >
+                    </span>
+
+                    <!-- 드롭다운 메뉴 -->
+                    <div class="dropdown-content">
+                        <a href="#">회원정보수정</a>
+                        <a href="#">비밀번호수정</a>
+                        <a href="#">로그아웃</a>
+                    </div>
                 </div>
             </div>
         </header>

@@ -1,4 +1,20 @@
 document.addEventListener('DOMContentLoaded', async () => {
+    // 현재 쿠키 정보에서 사용자 정보 가져오기
+    // 주어진 이름의 쿠키를 반환하는데,
+    // 조건에 맞는 쿠키가 없다면 undefined를 반환합니다.
+    function getCookie(name) {
+        let matches = document.cookie.match(
+            new RegExp(
+                '(?:^|; )' +
+                    name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') +
+                    '=([^;]*)',
+            ),
+        );
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
+
+    const userId = getCookie('user_id');
+    console.log(userId);
     // 현재 URL에서 post_id 추출
     const getPostIdFromUrl = () => {
         const pathSegments = window.location.pathname.split('/');
@@ -28,7 +44,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const postId = await getPostIdFromUrl();
         const posts = await fetchPostData(postId); // await 안해주면 promise 타입이 됨
         const postData = posts.data;
-        console.log(postData);
 
         if (postData) {
             document.getElementById('post-title').innerText =
@@ -125,7 +140,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         commentList.innerHTML = ''; // 댓글 초기화
 
         if (!commentsData || commentsData.length === 0) {
-            console.log('No comments to render');
             return;
         }
 
