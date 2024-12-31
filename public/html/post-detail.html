@@ -197,6 +197,10 @@
                 line-height: 25.04px;
             }
 
+            .post-like.liked {
+                background-color: #9e9595;
+            }
+
             /* 댓글 */
             .comment-section {
                 width: 595px;
@@ -434,8 +438,8 @@
                     <div class="post-nav">
                         <div class="post-nav-left">
                             <img id="post-profile" src="" />
-                            <p id="post-writer">더미 작성자1</p>
-                            <p id="post-time">2024-11-04 15:58:34</p>
+                            <p id="post-writer"></p>
+                            <p id="post-time"></p>
                         </div>
                         <div class="post-nav-right">
                             <button id="post-modify">수정</button>
@@ -495,6 +499,10 @@
             </div>
         </section>
 
-        <script defer src="/scripts/post-detail-script.js"></script>
+        <script
+            defer
+            type="module"
+            src="/scripts/post-detail-script.js"
+        ></script>
     </body>
 </html>

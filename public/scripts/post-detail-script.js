@@ -1,20 +1,6 @@
-document.addEventListener('DOMContentLoaded', async () => {
-    // 현재 쿠키 정보에서 사용자 정보 가져오기
-    // 주어진 이름의 쿠키를 반환하는데,
-    // 조건에 맞는 쿠키가 없다면 undefined를 반환합니다.
-    function getCookie(name) {
-        let matches = document.cookie.match(
-            new RegExp(
-                '(?:^|; )' +
-                    name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') +
-                    '=([^;]*)',
-            ),
-        );
-        return matches ? decodeURIComponent(matches[1]) : undefined;
-    }
+import { BASE_URL } from '../../global.js';
 
-    const userId = getCookie('user_id');
-    console.log(userId);
+document.addEventListener('DOMContentLoaded', async () => {
     // 현재 URL에서 post_id 추출
     const getPostIdFromUrl = () => {
         const pathSegments = window.location.pathname.split('/');
@@ -22,12 +8,48 @@ document.addEventListener('DOMContentLoaded', async () => {
         return postId;
     };
 
+    // 로그인 시 세션에서 유저 데이터 가져오는 함수
+    async function getUserInfo() {
+        try {
+            const response = await fetch(`${BASE_URL}/api/auths/profile`, {
+                method: 'GET',
+                credentials: 'include', // 세션 쿠키 포함
+            });
+
+            if (response.ok) {
+                const userInfo = await response.json();
+                return userInfo; // 사용자 정보 반환
+            } else {
+                return null; // 로그인되지 않은 상태
+            }
+        } catch (error) {
+            console.error('사용자 정보 가져오기 실패:', error);
+            return null;
+        }
+    }
+
+    // 로그인 상태에서 헤더 유저 정보 렌더링
+    const profileImage = document.querySelector('.profile');
+    const renderUserData = async () => {
+        const user = await getUserInfo();
+
+        if (user) {
+            profileImage.src = user.profile_image;
+        } else {
+            showLoggedOutState();
+        }
+    };
+
+    function showLoggedOutState() {
+        profileImage.src = 'https://www.gravatar.com/avatar/?d=mp';
+    }
+
+    renderUserData();
+
     // 게시글 상세 정보 데이터 가져오기
     const fetchPostData = async (postId) => {
         try {
-            const response = await fetch(
-                `http://localhost:3000/api/posts/${postId}`,
-            );
+            const response = await fetch(`${BASE_URL}/api/posts/${postId}`);
             if (!response.ok) {
                 throw new Error('게시글 정보를 불러오는데 실패했습니다.');
             }
@@ -52,7 +74,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 postData.author.profile_image;
             document.getElementById('post-writer').innerText =
                 postData.author.name;
-            document.getElementById('post-time').innerText = postData.create_at;
+            document.getElementById('post-time').innerText =
+                postData.created_at;
             document.getElementById('post-title').innerText =
                 postData.post_title;
 
@@ -60,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const postImage = postData.post_image.split('/');
             const lastPostImage = postImage[postImage.length - 1];
             document.getElementById('post-image').src =
-                `http://localhost:3000/post-images/${lastPostImage}`;
+                `${BASE_URL}/post-images/${lastPostImage}`;
 
             document.getElementById('post-text').innerText =
                 postData.post_content;
@@ -71,57 +94,78 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('post-comment-count').innerText =
                 postData.comments;
         }
+
+        // 로그인 조건부로 게시글 수정, 삭제 버튼을 렌더링(게시글 주인만 수정, 삭제 가능)
+        const currentUser = await getUserInfo();
+
+        const postNavRight = document.querySelector('.post-nav-right');
+        const isAuthor = currentUser && currentUser.id === postData.author.id;
+
+        const postHTML = `
+        ${
+            isAuthor
+                ? `
+            <button id="post-modify">수정</button>
+            <button id="post-delete">삭제</button>
+            `
+                : ''
+        }
+        `;
+
+        postNavRight.innerHTML = postHTML;
+
+        // 게시글 수정 버튼 클릭 시 수정 페이지 이동
+        document.getElementById('post-modify').addEventListener('click', () => {
+            const postId = getPostIdFromUrl();
+            window.location.href = `/posts/${postId}/edit`;
+        });
+
+        // 게시글 삭제 버튼 클릭 시 게시글 삭제
+        document.getElementById('post-delete').addEventListener('click', () => {
+            const postId = getPostIdFromUrl();
+            const deletePostModal = document.getElementById('postDeleteModal');
+            const cancelPostDeleteButton =
+                document.getElementById('cancel-btn-id');
+            const confirmPostDeleteButton =
+                document.getElementById('confirm-btn-id');
+
+            deletePostModal.style.display = 'flex';
+
+            cancelPostDeleteButton.onclick = () => {
+                deletePostModal.style.display = 'none';
+            };
+
+            const deletePost = async (postId) => {
+                try {
+                    const response = await fetch(
+                        `${BASE_URL}/api/posts/${postId}`,
+                        {
+                            method: 'DELETE',
+                            credentials: 'include', // 세션이나 JWT를 포함
+                        },
+                    );
+                    if (!response.ok)
+                        throw new Error('삭제할 게시글을 찾지 못했습니다.');
+                } catch (e) {
+                    console.error('Post Delete Error:', e);
+                }
+            };
+
+            confirmPostDeleteButton.onclick = () => {
+                deletePost(postId);
+                deletePostModal.style.display = 'none';
+                window.location.href = `/posts`;
+            };
+        });
     };
 
     renderPost();
-
-    // 게시글 수정 버튼 클릭 시 수정 페이지 이동
-    document.getElementById('post-modify').addEventListener('click', () => {
-        const postId = getPostIdFromUrl();
-        window.location.href = `/posts/${postId}/edit`;
-    });
-
-    // 게시글 삭제 버튼 클릭 시 게시글 삭제
-    document.getElementById('post-delete').addEventListener('click', () => {
-        const postId = getPostIdFromUrl();
-        const deletePostModal = document.getElementById('postDeleteModal');
-        const cancelPostDeleteButton = document.getElementById('cancel-btn-id');
-        const confirmPostDeleteButton =
-            document.getElementById('confirm-btn-id');
-
-        deletePostModal.style.display = 'flex';
-
-        cancelPostDeleteButton.onclick = () => {
-            deletePostModal.style.display = 'none';
-        };
-
-        const deletePost = async (postId) => {
-            try {
-                const response = await fetch(
-                    `http://localhost:3000/api/posts/${postId}`,
-                    {
-                        method: 'DELETE',
-                    },
-                );
-                if (!response.ok)
-                    throw new Error('삭제할 게시글을 찾지 못했습니다.');
-            } catch (e) {
-                console.error('Post Delete Error:', e);
-            }
-        };
-
-        confirmPostDeleteButton.onclick = () => {
-            deletePost(postId);
-            deletePostModal.style.display = 'none';
-            window.location.href = `/posts`;
-        };
-    });
 
     // 댓글을 JSON 파일에서 가져와 표시하는 함수
     const fetchCommentData = async (postId) => {
         try {
             const response = await fetch(
-                `http://localhost:3000/api/posts/${postId}/comments`,
+                `${BASE_URL}/api/posts/${postId}/comments`,
             );
 
             const comments = await response.json();
@@ -143,25 +187,43 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
+        const currentUser = await getUserInfo();
         // 댓글 렌더링
         commentsData.forEach((comment) => {
             const commentCard = document.createElement('div');
             commentCard.className = 'comment';
             commentCard.dataset.commentId = comment.comment_id; // 댓글 ID 저장
             commentCard.innerHTML = `
-                <img src="${comment.profile_image}" alt="프로필 사진">
+                <img src="${comment.comment_author.profile_image}" alt="프로필 사진">
                 <div class="comment-content">
                     <div class="comment-header">
-                        <h4>${comment.author_name}</h4>
-                        <small>${comment.comment_time}</small>
+                        <h4>${comment.comment_author.nickname}</h4>
+                        <small>${comment.comment_created_at}</small>
                     </div>
                     <div class="comment-text">${comment.comment_content}</div>
-                    <div class="comment-actions">
-                        <button class="comment-edit-btn">수정</button>
-                        <button class="comment-delete-btn">삭제</button>
-                    </div>
                 </div>
             `;
+
+            // 수정, 삭제 버튼을 작성자인 경우에만 추가
+
+            const isAuthor =
+                currentUser &&
+                currentUser.id === comment.comment_author.user_id;
+
+            if (isAuthor) {
+                const actionsContainer = document.createElement('div');
+                actionsContainer.className = 'comment-actions';
+
+                actionsContainer.innerHTML = `
+                <button class="comment-edit-btn" data-comment-id="${comment.comment_id}">수정</button>
+                <button class="comment-delete-btn" data-comment-id="${comment.comment_id}">삭제</button>
+            `;
+
+                commentCard
+                    .querySelector('.comment-content')
+                    .appendChild(actionsContainer);
+            }
+
             commentList.appendChild(commentCard);
         });
     };
@@ -213,12 +275,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             try {
                 const response = await fetch(
-                    `http://localhost:3000/api/posts/${postId}/comments/${commentId}`,
+                    `${BASE_URL}/api/posts/${postId}/comments/${commentId}`,
                     { method: 'DELETE' },
                 );
 
                 await fetch(
-                    `http://localhost:3000/api/posts/${postId}/comments_decrease`,
+                    `${BASE_URL}/api/posts/${postId}/comments_decrease`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -238,7 +300,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     };
 
+    // 댓글 수 렌더링
+    const getCommentsFromServer = async () => {
+        const postId = getPostIdFromUrl();
+        try {
+            const response = await fetch(
+                `${BASE_URL}/api/posts/${postId}/comments_count`,
+                {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                },
+            );
+
+            const responseJson = await response.json();
+
+            const comments = await responseJson.data;
+
+            document.getElementById('post-comment-count').textContent =
+                comments;
+        } catch (e) {
+            console.error('error:', e);
+        }
+    };
+
     await renderComments(); // 댓글 렌더링
+    await getCommentsFromServer(); // 댓글 수 렌더링
     initializeCommentEvents(); // 수정/삭제 이벤트 초기화
 
     // 댓글을 추가하는 함수
@@ -269,7 +355,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 try {
                     const response = await fetch(
-                        `http://localhost:3000/api/posts/${postId}/comments/${commentId}`,
+                        `${BASE_URL}/api/posts/${postId}/comments/${commentId}`,
                         {
                             method: 'PATCH',
                             headers: { 'Content-Type': 'application/json' },
@@ -298,21 +384,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else {
                 // 댓글 작성 로직
                 const comment_content = commentText;
-                const comment_author = {
-                    id: 'abc1234',
-                    name: 'Jack',
-                    profile_image: '../images/고양이.jpg',
-                };
 
                 try {
                     const response = await fetch(
-                        `http://localhost:3000/api/posts/${postId}/comments`,
+                        `${BASE_URL}/api/posts/${postId}/comments`,
                         {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
                                 comment_content,
-                                comment_author,
                             }),
                         },
                     );
@@ -328,29 +408,63 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
-    // 좋아요 클릭 이벤트
-    document.querySelector('.post-like').addEventListener('click', async () => {
+    // 좋아요 버튼 초기화
+    const initializeLikeButton = async () => {
         const postId = getPostIdFromUrl();
-        try {
-            await fetch(`http://localhost:3000/api/posts/${postId}/likes_add`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
 
+        try {
+            // 좋아요 상태 가져오기(좋아요 했으면 true, 아니면 false)
             const response = await fetch(
-                `http://localhost:3000/api/posts/${postId}/likes`,
+                `${BASE_URL}/api/posts/${postId}/likes/like-status`,
                 {
                     method: 'GET',
+                    credentials: 'include', // 로그인 정보 포함
+                },
+            );
+            console.log(response);
+            const { success, liked } = await response.json();
+
+            if (success) {
+                const likeButton = document.querySelector('.post-like');
+                if (liked) {
+                    likeButton.classList.add('liked'); // liked 클래스 추가
+                } else {
+                    likeButton.classList.remove('liked'); // liked 클래스 제거
+                }
+            }
+        } catch (error) {
+            console.error('Error initializing like button:', error);
+        }
+    };
+
+    // 호출
+    initializeLikeButton();
+
+    // 좋아요 클릭 이벤트
+    document.querySelector('.post-like').addEventListener('click', async () => {
+        document.querySelector('.post-like').classList.toggle('liked'); // 클릭 시 'liked' 클래스 추가/제거
+
+        const postId = getPostIdFromUrl();
+        try {
+            const response = await fetch(
+                `${BASE_URL}/api/posts/${postId}/likes`,
+                {
+                    method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                 },
             );
 
             const responseJson = await response.json();
-            const likes = await responseJson.data;
 
-            document.getElementById('post-like-count').innerText = likes;
+            if (responseJson) {
+                // 좋아요 수 업데이트
+                document.getElementById('post-like-count').innerText =
+                    responseJson.data;
+            } else {
+                console.error('좋아요 처리 실패:', responseJson.message);
+            }
         } catch (e) {
-            console.error('좋아요 수 증가 에러:', e);
+            console.error('좋아요 처리 중 에러:', e);
         }
     });
 
@@ -358,13 +472,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const getViewsFromServer = async () => {
         const postId = getPostIdFromUrl();
         try {
-            await fetch(`http://localhost:3000/api/posts/${postId}/views`, {
+            await fetch(`${BASE_URL}/api/posts/${postId}/views`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
             });
 
             const response = await fetch(
-                `http://localhost:3000/api/posts/${postId}/views`,
+                `${BASE_URL}/api/posts/${postId}/views`,
                 {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' },
@@ -386,31 +500,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const addCommentsCount = async () => {
         const postId = getPostIdFromUrl();
         try {
-            await fetch(
-                `http://localhost:3000/api/posts/${postId}/comments_add`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                },
-            );
+            await fetch(`${BASE_URL}/api/posts/${postId}/comments_add`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
         } catch (e) {
             console.error('댓글 수 증가 에러:', e);
-        }
-    };
-
-    // 댓글 수 감소
-    const decreaseCommentsCount = async () => {
-        const postId = getPostIdFromUrl();
-        try {
-            await fetch(
-                `http://localhost:3000/api/posts/${postId}/comments_decrease`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                },
-            );
-        } catch (e) {
-            console.error('댓글 수 감소 에러:', e);
         }
     };
 
@@ -424,27 +519,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('confirmDelete').addEventListener('click', () => {
         getCommentsFromServer();
     });
-
-    // 댓글 수 렌더링
-    const getCommentsFromServer = async () => {
-        const postId = getPostIdFromUrl();
-        try {
-            const response = await fetch(
-                `http://localhost:3000/api/posts/${postId}/comments_count`,
-                {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' },
-                },
-            );
-
-            const responseJson = await response.json();
-
-            const comments = await responseJson.data;
-
-            document.getElementById('post-comment-count').textContent =
-                comments;
-        } catch (e) {
-            console.error('error:', e);
-        }
-    };
 });

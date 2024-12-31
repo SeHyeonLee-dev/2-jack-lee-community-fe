@@ -211,8 +211,8 @@
         }
         #user-modify-complete {
             width: 112px;
-            height: 46px;
-            padding: 12px 20px;
+            height: 52px;
+            padding: 16px 20px;
             border-radius: 30px;
             background-color: #aca0eb;
             color: #fff;
@@ -233,6 +233,7 @@
             background-color: transparent;
             justify-content: center;
             align-items: center;
+            z-index: 1000; /* 가장 앞에 표시 */
         }
         .modal-content {
             display: flex;
@@ -246,6 +247,7 @@
             text-align: center;
             width: 408px;
             height: 242px;
+            z-index: 1001; /* 부모보다 더 높은 z-index */
         }
         .modal-content p {
             font-weight: 700;
@@ -318,18 +320,48 @@
                 <div class="user-modify-profile">
                     <h2>회원정보수정</h2>
                     <p>프로필 사진*</p>
-                    <img
-                        id="user-modify-profile-image"
-                        src=""
-                        alt="프로필 이미지"
-                    />
+                    <div style="position: relative; display: inline-block">
+                        <img
+                            id="user-modify-profile-image"
+                            src=""
+                            alt="프로필 이미지"
+                        />
+                        <button
+                            id="change-profile-btn"
+                            style="
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);
+                                background-color: rgba(0, 0, 0, 0.6);
+                                color: white;
+                                border: 1px solid #ffffff;
+                                border-radius: 25px;
+                                padding: 6px 12px;
+                                cursor: pointer;
+                                z-index: 1;
+                            "
+                        >
+                            변경
+                        </button>
+                        <input
+                            type="file"
+                            id="profile-image-upload"
+                            accept="image/*"
+                            style="display: none"
+                        />
+                    </div>
                 </div>
                 <div class="user-modify-name">
                     <p>이메일</p>
-                    <span>sehyeondev@gmail.com</span>
+                    <span id="user-modify-nickname">sehyeondev@gmail.com</span>
                     <form class="user-modify-name-form">
                         <label for="nickname">닉네임</label>
-                        <input type="text" />
+                        <input
+                            type="text"
+                            id="user-modify-nickname-input"
+                            style="padding-left: 6px"
+                        />
                         <span class="helper-text">* helper text</span>
                     </form>
                 </div>
@@ -345,6 +377,10 @@
             </div>
         </section>
 
-        <script defer src="/scripts/user-modify-script.js"></script>
+        <script
+            defer
+            type="module"
+            src="/scripts/user-modify-script.js"
+        ></script>
     </body>
 </html>

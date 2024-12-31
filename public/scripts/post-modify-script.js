@@ -1,3 +1,5 @@
+import { BASE_URL } from '../../global.js';
+
 document.addEventListener('DOMContentLoaded', async () => {
     // 현재 URL에서 post_id 추출
     const getPostIdFromUrl = () => {
@@ -6,12 +8,48 @@ document.addEventListener('DOMContentLoaded', async () => {
         return postId;
     };
 
+    // 로그인 시 세션에서 유저 데이터 가져오는 함수
+    async function getUserInfo() {
+        try {
+            const response = await fetch(`${BASE_URL}/api/auths/profile`, {
+                method: 'GET',
+                credentials: 'include', // 세션 쿠키 포함
+            });
+
+            if (response.ok) {
+                const userInfo = await response.json();
+                return userInfo; // 사용자 정보 반환
+            } else {
+                return null; // 로그인되지 않은 상태
+            }
+        } catch (error) {
+            console.error('사용자 정보 가져오기 실패:', error);
+            return null;
+        }
+    }
+
+    // 로그인 상태에서 헤더 유저 정보 렌더링
+    const profileImage = document.querySelector('.profile');
+    const renderUserData = async () => {
+        const user = await getUserInfo();
+
+        if (user) {
+            profileImage.src = user.profile_image;
+        } else {
+            showLoggedOutState();
+        }
+    };
+
+    function showLoggedOutState() {
+        profileImage.src = 'https://www.gravatar.com/avatar/?d=mp';
+    }
+
+    renderUserData();
+
     // 게시글 상세 정보 데이터 가져오기
     const fetchPostData = async (postId) => {
         try {
-            const response = await fetch(
-                `http://localhost:3000/api/posts/${postId}`,
-            );
+            const response = await fetch(`${BASE_URL}/api/posts/${postId}`);
             if (!response.ok) {
                 throw new Error(
                     '수정할 게시글 정보를 불러오는데 실패했습니다.',
@@ -69,7 +107,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             try {
                 // 서버에 수정 요청 보내기
                 const response = await fetch(
-                    `http://localhost:3000/api/posts/${postId}`,
+                    `${BASE_URL}/api/posts/${postId}`,
                     {
                         method: 'PATCH',
                         headers: {
@@ -87,7 +125,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     formData.append('post_image_name', file.name);
 
                     const uploadResponse = await fetch(
-                        `http://localhost:3000/api/posts/${postId}/post-image`,
+                        `${BASE_URL}/api/posts/${postId}/post-image`,
                         {
                             method: 'POST',
                             body: formData,

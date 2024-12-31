@@ -1,4 +1,7 @@
+import { BASE_URL } from '../../global.js';
+
 document.addEventListener('DOMContentLoaded', async () => {
+    let userId = '';
     const passwordInput = document.querySelector(
         'input[placeholder="비밀번호를 입력하세요"]',
     );
@@ -60,10 +63,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const profileNickname = document.getElementById('profile-nickname');
     // 로그인 상태에 따라 프로필 업데이트
     try {
-        const response = await fetch(
-            'http://localhost:3000/api/auths/profile',
-            { credentials: 'include' },
-        );
+        const response = await fetch(`${BASE_URL}/api/auths/profile`, {
+            credentials: 'include',
+        });
         const result = await response.json();
 
         if (result) {
@@ -74,7 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             showLoggedOutState();
         }
 
-        const userId = result.id;
+        userId = result.id;
 
         // 드롭다운 요소 클릭 시 다른 페이지 이동
         document
@@ -110,7 +112,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log('test');
             try {
                 const logoutResponse = await fetch(
-                    'http://localhost:3000/api/auths/logout',
+                    `${BASE_URL}/api/auths/logout`,
                     {
                         method: 'POST',
                         credentials: 'include',
@@ -150,5 +152,37 @@ document.addEventListener('DOMContentLoaded', async () => {
                 dropdownContent.style.display = 'none';
             }
         });
+    });
+
+    modifyButton.addEventListener('click', async () => {
+        const passwordInput = document.getElementById('pw-input');
+        const rePasswordInput = document.getElementById('re-pw-input');
+
+        try {
+            const response = await fetch(
+                `http://localhost:3000/api/users/update-password/${userId}`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        password: passwordInput.value,
+                        re_password: rePasswordInput.value,
+                    }),
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error('비밀번호 변경 실패');
+            }
+
+            const result = await response.json();
+            alert('비밀번호가 성공적으로 변경되었습니다.');
+            window.location.href = '/posts';
+        } catch (error) {
+            console.error('비밀번호 변경 중 오류 발생:', error);
+            alert('비밀번호 변경 중 오류가 발생했습니다. 다시 시도해주세요.');
+        }
     });
 });

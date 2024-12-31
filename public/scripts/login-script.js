@@ -1,3 +1,5 @@
+import { BASE_URL } from '../../global.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     const loginButton = document.getElementById('login-btn');
     const signupButton = document.getElementById('signup-btn');
@@ -14,8 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loginButton.addEventListener('click', async (event) => {
         event.preventDefault(); // 폼 기본 동작 방지
 
-        console.log('aa');
-
         // 사용자 입력 값 가져오기
         const email = emailInput.value.trim();
         const password = passwordInput.value;
@@ -27,16 +27,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // 서버로 로그인 요청
-            const response = await fetch(
-                'http://localhost:3000/api/auths/login',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email, password }),
+            const response = await fetch(`${BASE_URL}/api/auths/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-            );
+                body: JSON.stringify({ email, password }),
+            });
 
             const result = await response.json();
 

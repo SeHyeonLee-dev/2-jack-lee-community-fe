@@ -1,3 +1,5 @@
+import { BASE_URL } from '../../global.js';
+
 const registerForm = document.querySelector('.signup-form');
 
 // 회원가입
@@ -13,19 +15,16 @@ registerForm.addEventListener('submit', async (e) => {
 
     try {
         // 회원가입 API 요청
-        const response = await fetch(
-            'http://localhost:3000/api/users/register',
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email,
-                    password,
-                    re_password,
-                    nickname,
-                }),
-            },
-        );
+        const response = await fetch(`${BASE_URL}/api/users/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email,
+                password,
+                re_password,
+                nickname,
+            }),
+        });
 
         const result = await response.json();
 
@@ -37,7 +36,7 @@ registerForm.addEventListener('submit', async (e) => {
             formData.append('profile_image', profile_image.files[0]);
 
             const uploadResponse = await fetch(
-                `http://localhost:3000/api/users/${userId}/profile-image`,
+                `${BASE_URL}/api/users/${userId}/profile-image`,
                 {
                     method: 'POST',
                     body: formData,

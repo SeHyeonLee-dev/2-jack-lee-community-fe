@@ -1,3 +1,5 @@
+import { BASE_URL } from '../../global.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     const titleInput = document.getElementById('title');
     const contentInput = document.getElementById('content');
@@ -58,17 +60,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 게시글 작성 API 요청
         try {
-            const postResponse = await fetch(
-                'http://localhost:3000/api/posts',
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        post_title,
-                        post_content,
-                    }),
-                },
-            );
+            const postResponse = await fetch(`${BASE_URL}/api/posts`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    post_title,
+                    post_content,
+                }),
+            });
 
             const result = await postResponse.json();
             const postId = result.data.post_id;
@@ -82,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(formData);
 
                 const uploadResponse = await fetch(
-                    `http://localhost:3000/api/posts/${postId}/post-image`,
+                    `${BASE_URL}/api/posts/${postId}/post-image`,
                     {
                         method: 'POST',
                         body: formData,

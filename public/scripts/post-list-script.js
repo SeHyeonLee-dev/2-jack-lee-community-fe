@@ -1,3 +1,5 @@
+import { BASE_URL } from '../../global.js';
+
 document.addEventListener('DOMContentLoaded', async () => {
     const writeBtn = document.getElementById('write-btn');
 
@@ -21,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 데이터 가져오는 함수
     async function fetchPosts() {
         try {
-            const response = await fetch('http://localhost:3000/api/posts');
+            const response = await fetch(`${BASE_URL}/api/posts`);
             if (!response.ok) {
                 throw new Error('게시글을 불러올 수 없음');
             }
@@ -35,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // 게시글 생성 함수
-    function renderPosts(posts) {
+    async function renderPosts(posts) {
         const postList = document.getElementById('post-list');
 
         // foreach가 타입 오류때문에 안되서 for문으로 변경
@@ -44,7 +46,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const postCard = document.createElement('div');
             postCard.className = 'post-card';
             postCard.style.cursor = 'pointer';
-            console.log(post);
+            // 댓글 수 동기화
+            if (post.comments_info) {
+                post.comments = post.comments_info.length;
+            }
 
             postCard.innerHTML = `
             <div class="post-title">${post.post_title}</div>
@@ -96,16 +101,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 로그인 상태에 따라 프로필 업데이트
     try {
-        const response = await fetch(
-            'http://localhost:3000/api/auths/profile',
-            { credentials: 'include' },
-        );
+        const response = await fetch(`${BASE_URL}/api/auths/profile`, {
+            credentials: 'include',
+        });
         const result = await response.json();
 
         if (result && result.nickname) {
             const { nickname, profile_image } = result;
             profileImage.src = profile_image;
-            profileNickname.textContent = 'Your NickName: ' + nickname;
+            profileNickname.textContent = 'Hi ' + nickname + '😊😊';
         } else {
             showLoggedOutState();
         }
@@ -145,7 +149,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         async function handleLogout() {
             try {
                 const logoutResponse = await fetch(
-                    'http://localhost:3000/api/auths/logout',
+                    `${BASE_URL}/api/auths/logout`,
                     {
                         method: 'POST',
                         credentials: 'include',
