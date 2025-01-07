@@ -17,14 +17,14 @@ profileCircle.addEventListener('click', () => {
 });
 
 // 파일 선택 시 이미지 미리보기 처리
-fileInput.addEventListener('change', (event) => {
-    const file = event.target.files[0]; // 선택한 파일 가져오기
+fileInput.addEventListener('change', ({ target }) => {
+    const file = target.files[0]; // 선택한 파일 가져오기
 
     if (file) {
         const reader = new FileReader();
 
-        reader.onload = function (e) {
-            profileImage.src = e.target.result; // 이미지 소스 업데이트
+        reader.onload = ({ target: { result } }) => {
+            profileImage.src = result; // 이미지 소스 업데이트
             profileImage.style.display = 'block'; // 이미지 보이기
             addIcon.style.display = 'none'; // '+' 아이콘 숨기기
         };

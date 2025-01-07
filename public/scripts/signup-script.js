@@ -2,8 +2,22 @@ import { BASE_URL } from '../../global.js';
 
 const registerForm = document.querySelector('.signup-form');
 
+// Fetch API 요청 함수
+const sendFetchRequest = async (url, options) => {
+    try {
+        const response = await fetch(url, options);
+        const result = await response.json();
+        if (!response.ok) {
+            throw new Error(result.message || 'API 요청 실패');
+        }
+        return result;
+    } catch (error) {
+        console.error(`Error during fetch: ${error.message}`);
+        throw error;
+    }
+};
+
 // 회원가입
-// 이미지 업로드는 별도로 처리
 registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -15,18 +29,21 @@ registerForm.addEventListener('submit', async (e) => {
 
     try {
         // 회원가입 API 요청
-        const response = await fetch(`${BASE_URL}/api/users/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                email,
-                password,
-                re_password,
-                nickname,
-            }),
-        });
+        const registerData = {
+            email,
+            password,
+            re_password,
+            nickname,
+        };
 
-        const result = await response.json();
+        const result = await sendFetchRequest(
+            `${BASE_URL}/api/users/register`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(registerData),
+            },
+        );
 
         const userId = result.data.id; // 반환된 user_id
 
@@ -35,25 +52,14 @@ registerForm.addEventListener('submit', async (e) => {
             const formData = new FormData();
             formData.append('profile_image', profile_image.files[0]);
 
-            const uploadResponse = await fetch(
+            await sendFetchRequest(
                 `${BASE_URL}/api/users/${userId}/profile-image`,
                 {
                     method: 'POST',
                     body: formData,
                 },
             );
-
-            const uploadResult = await uploadResponse.json();
-
-            if (!uploadResponse.ok) {
-                console.log(
-                    `프로필 이미지 업로드 실패: ${uploadResult.message}`,
-                );
-                alert(`회원가입에 실패했습니다.: ${result.message}`);
-                return;
-            } else {
-                console.log('프로필 이미지 업로드 성공');
-            }
+            console.log('프로필 이미지 업로드 성공');
         }
 
         // 회원가입 성공 시 게시글 목록 페이지 이동
@@ -61,7 +67,6 @@ registerForm.addEventListener('submit', async (e) => {
             window.location.href = '/posts'; // 확인 버튼 클릭 시 이동
         }
     } catch (error) {
-        console.error('Error:', error);
-        alert('회원가입 중 문제가 발생했습니다.');
+        alert(`회원가입 중 문제가 발생했습니다: ${error.message}`);
     }
 });

@@ -22,28 +22,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 제목과 내용이 모두 입력되면 helper text 숨기기
-    function toggleHelperText() {
-        if (titleInput.value.trim() && contentInput.value.trim()) {
-            helperText.style.display = 'none';
-        } else {
-            helperText.style.display = 'block';
-        }
-    }
+    const toggleHelperText = () => {
+        helperText.style.display =
+            titleInput.value.trim() && contentInput.value.trim()
+                ? 'none'
+                : 'block';
+    };
 
     // 제목과 내용이 모두 입력되면 완료 버튼 활성화
-    function toggleCompleteButton() {
-        const title = document.getElementById('title').value;
-        const content = document.getElementById('content').value;
-        const completeButton = document.getElementById('post-add-complete-btn');
+    const toggleCompleteButton = () => {
+        const title = titleInput.value.trim();
+        const content = contentInput.value.trim();
 
-        if (title && content) {
-            completeButton.disabled = false;
-            completeButton.style.backgroundColor = '#7F6AEE';
-        } else {
-            completeButton.disabled = true;
-            completeButton.style.backgroundColor = '#ACA0EB';
-        }
-    }
+        postAddCompleteBtn.disabled = !(title && content);
+        postAddCompleteBtn.style.backgroundColor =
+            title && content ? '#7F6AEE' : '#ACA0EB';
+    };
 
     titleInput.addEventListener('input', toggleHelperText);
     contentInput.addEventListener('input', toggleHelperText);
@@ -58,15 +52,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const post_title = titleInput.value.trim();
         const post_content = contentInput.value.trim();
 
-        // 게시글 작성 API 요청
         try {
+            // 게시글 작성 API 요청
             const postResponse = await fetch(`${BASE_URL}/api/posts`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    post_title,
-                    post_content,
-                }),
+                body: JSON.stringify({ post_title, post_content }),
             });
 
             const result = await postResponse.json();
@@ -78,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const formData = new FormData();
                 formData.append('post_image', file);
                 formData.append('post_image_name', file.name);
-                console.log(formData);
 
                 const uploadResponse = await fetch(
                     `${BASE_URL}/api/posts/${postId}/post-image`,
@@ -90,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const uploadResult = await uploadResponse.json();
                 if (!uploadResponse.ok) {
-                    console.log(
+                    console.error(
                         `게시글 이미지 업로드 실패: ${uploadResult.message}`,
                     );
                     return;
@@ -101,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 게시글 작성 성공 시 게시글 목록 페이지 이동
             if (confirm('게시글을 작성했습니다.')) {
-                window.location.href = '/posts'; // 확인 버튼 클릭 시 이동
+                window.location.href = '/posts';
             }
         } catch (error) {
             console.error('Error:', error);

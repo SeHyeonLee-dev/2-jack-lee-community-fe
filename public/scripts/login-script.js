@@ -3,7 +3,6 @@ import { BASE_URL } from '../../global.js';
 document.addEventListener('DOMContentLoaded', () => {
     const loginButton = document.getElementById('login-btn');
     const signupButton = document.getElementById('signup-btn');
-
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
 
@@ -34,8 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({ email, password }),
             });
-
-            const result = await response.json();
 
             if (response.ok) {
                 // 로그인 성공
