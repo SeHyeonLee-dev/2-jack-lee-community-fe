@@ -1,6 +1,12 @@
 import { BASE_URL } from '../../global.js';
 
 const registerForm = document.querySelector('.signup-form');
+const jackTitle = document.getElementById('jack-title');
+
+// 제목 클릭시 게시글 페이지 이동
+jackTitle.addEventListener('click', () => {
+    window.location.href = '/posts';
+});
 
 // Fetch API 요청 함수
 const sendFetchRequest = async (url, options) => {

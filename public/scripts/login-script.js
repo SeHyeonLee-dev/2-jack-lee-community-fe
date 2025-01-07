@@ -1,10 +1,16 @@
 import { BASE_URL } from '../../global.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    const jackTitle = document.getElementById('jack-title');
     const loginButton = document.getElementById('login-btn');
     const signupButton = document.getElementById('signup-btn');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
+
+    // 제목 클릭시 게시글 페이지 이동
+    jackTitle.addEventListener('click', () => {
+        window.location.href = '/posts';
+    });
 
     // 회원가입 버튼 클릭 시 회원가입 페이지 이동
     signupButton.addEventListener('click', () => {
