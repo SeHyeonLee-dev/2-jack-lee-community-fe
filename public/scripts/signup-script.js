@@ -9,7 +9,7 @@ jackTitle.addEventListener('click', () => {
 });
 
 // Fetch API 요청 함수
-const sendFetchRequest = async (url, options) => {
+const fetchAPI = async (url, options) => {
     try {
         const response = await fetch(url, options);
         const result = await response.json();
@@ -30,8 +30,8 @@ registerForm.addEventListener('submit', async (e) => {
     const email = document.getElementById('emailInput').value;
     const password = document.getElementById('passwordInput').value;
     const re_password = document.getElementById('confirmPwInput').value;
-    const nickname = document.getElementById('nicknameInput').value;
-    const profile_image = document.getElementById('fileInput');
+    const username = document.getElementById('nicknameInput').value;
+    const profile_image_url = document.getElementById('fileInput');
 
     try {
         // 회원가입 API 요청
@@ -39,33 +39,26 @@ registerForm.addEventListener('submit', async (e) => {
             email,
             password,
             re_password,
-            nickname,
+            username,
         };
 
-        const result = await sendFetchRequest(
-            `${BASE_URL}/api/users/register`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(registerData),
-            },
-        );
+        const result = await fetchAPI(`${BASE_URL}/api/users/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(registerData),
+        });
 
-        const userId = result.data.id; // 반환된 user_id
+        const userId = result.data.user_id;
 
         // 프로필 이미지 업로드 API 요청
-        if (profile_image.files.length > 0) {
+        if (profile_image_url.files.length > 0) {
             const formData = new FormData();
-            formData.append('profile_image', profile_image.files[0]);
+            formData.append('profile_image', profile_image_url.files[0]);
 
-            await sendFetchRequest(
-                `${BASE_URL}/api/users/${userId}/profile-image`,
-                {
-                    method: 'POST',
-                    body: formData,
-                },
-            );
-            console.log('프로필 이미지 업로드 성공');
+            await fetchAPI(`${BASE_URL}/api/users/${userId}/profile-image`, {
+                method: 'POST',
+                body: formData,
+            });
         }
 
         // 회원가입 성공 시 게시글 목록 페이지 이동
@@ -74,5 +67,6 @@ registerForm.addEventListener('submit', async (e) => {
         }
     } catch (error) {
         alert(`회원가입 중 문제가 발생했습니다: ${error.message}`);
+        console.error(error);
     }
 });

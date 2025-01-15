@@ -80,10 +80,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         if (result) {
-            const { nickname, profile_image, id } = result;
-            profileImage.src = profile_image;
-            profileNickname.textContent = `Your NickName: ${nickname}`;
-            userId = id;
+            const { username, profile_image_url, user_id } = result;
+            profileImage.src = profile_image_url
+                ? profile_image_url
+                : 'https://www.gravatar.com/avatar/?d=mp';
+            profileNickname.textContent = `Your NickName: ${username}`;
+            userId = user_id;
         } else {
             showLoggedOutState();
         }
@@ -123,9 +125,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 window.location.href = '/posts';
             } catch (error) {
                 alert('로그아웃에 실패했습니다. 다시 시도해주세요.');
+                console.error(error);
             }
         };
     } catch (error) {
+        console.error(error);
         showLoggedOutState();
     }
 
@@ -164,6 +168,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.location.href = '/posts';
         } catch (error) {
             alert('비밀번호 변경 중 오류가 발생했습니다. 다시 시도해주세요.');
+            console.error(error);
         }
     });
 });

@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const renderUserData = async () => {
         const user = await getUserInfo();
         profileImage.src = user
-            ? user.profile_image
+            ? user.profile_image_url
             : 'https://www.gravatar.com/avatar/?d=mp';
     };
 
@@ -89,7 +89,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     {
                         method: 'PATCH',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ postTitle, postContent }), // 수정된 내용 전송
+                        body: JSON.stringify({
+                            post_title: postTitle,
+                            post_content: postContent,
+                        }), // 수정된 내용 전송
                     },
                 );
 

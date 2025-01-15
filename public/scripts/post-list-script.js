@@ -39,27 +39,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         const postList = document.getElementById('post-list');
 
         for (const post of posts) {
+            console.log(post);
             const postCard = document.createElement('div');
             postCard.className = 'post-card';
             postCard.style.cursor = 'pointer';
-
-            // 댓글 수 동기화
-            if (post.comments_info) {
-                post.comments = post.comments_info.length;
-            }
 
             postCard.innerHTML = `
                 <div class="post-title">${post.post_title}</div>
                 <div class="post-info">
                     <div class="post-info-left">
                         <div class="post-info-item">
-                            <p>좋아요</p><span>${post.likes}</span>
+                            <p>좋아요</p><span>${post.post_likes}</span>
                         </div>
                         <div class="post-info-item">
-                            <p>댓글</p><span>${post.comments}</span>
+                            <p>댓글</p><span>${post.post_comments}</span>
                         </div>
                         <div class="post-info-item">
-                            <p>조회수</p><span>${post.views}</span>
+                            <p>조회수</p><span>${post.post_views}</span>
                         </div>
                     </div>
                     <div class="post-info-right">
@@ -68,10 +64,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
                 <div class="post-info-writer">
                     <div class="writer-profile">
-                        <img class="writer-profile-img" src="${post.author.profile_image}" alt="작성자 이미지">
+                        <img class="writer-profile-img" src="${post.author.profile_image ? post.author.profile_image : 'https://www.gravatar.com/avatar/?d=mp'}"  alt="작성자 이미지">
                     </div>
                     <div class="writer-name">
-                        <p><b>${post.author.name}</b></p>
+                        <p><b>${post.author.username}</b></p>
                     </div>
                 </div>
             `;
@@ -96,15 +92,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 로그인 상태에 따라 프로필 업데이트
     try {
-        const response = await fetch(`${BASE_URL}/api/auths/profile`, {
+        const userData = await fetch(`${BASE_URL}/api/auths/profile`, {
             credentials: 'include',
         });
-        const result = await response.json();
+        const user = await userData.json();
 
-        if (result && result.nickname) {
-            const { nickname, profile_image, id: userId } = result;
-            profileImage.src = profile_image;
-            profileNickname.textContent = `Hi ${nickname} 😊😊`;
+        if (user && user.username) {
+            const { username, profile_image_url, user_id } = user;
+            if (profile_image_url === null) {
+                profileImage.src = 'https://www.gravatar.com/avatar/?d=mp';
+            } else {
+                profileImage.src = profile_image_url;
+            }
+
+            profileNickname.textContent = `Hi ${username} 😊😊`;
 
             // 드롭다운 요소 클릭 시 다른 페이지 이동
             document
@@ -120,10 +121,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     try {
                         switch (linkText) {
                             case '회원정보수정':
-                                window.location.href = `/users/${userId}/edit`;
+                                window.location.href = `/users/${user_id}/edit`;
                                 break;
                             case '비밀번호수정':
-                                window.location.href = `/users/${userId}/edit-pw`;
+                                window.location.href = `/users/${user_id}/edit-pw`;
                                 break;
                             case '로그아웃':
                                 await handleLogout();
@@ -159,17 +160,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             };
         } else {
-            showLoggedOutState();
+            profileImage.src = 'https://www.gravatar.com/avatar/?d=mp';
+            profileNickname.textContent = '로그인 해주세요';
         }
     } catch (error) {
         console.error('Error checking login status:', error);
-        showLoggedOutState();
-    }
-
-    const showLoggedOutState = () => {
         profileImage.src = 'https://www.gravatar.com/avatar/?d=mp';
         profileNickname.textContent = '로그인 해주세요';
-    };
+    }
 
     // 프로필을 클릭했을 때 보이거나 숨기도록 함수
     profileImage.addEventListener('click', () => {

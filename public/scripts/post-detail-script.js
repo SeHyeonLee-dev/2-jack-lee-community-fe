@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const user = await getUserInfo();
         const profileImage = document.querySelector('.profile');
         profileImage.src =
-            user?.profile_image || 'https://www.gravatar.com/avatar/?d=mp';
+            user?.profile_image_url || 'https://www.gravatar.com/avatar/?d=mp';
     };
 
     // 게시글 상세 정보를 렌더링
@@ -36,27 +36,36 @@ document.addEventListener('DOMContentLoaded', async () => {
         const postId = getPostIdFromUrl();
         const postData = (await fetchAPI(`${BASE_URL}/api/posts/${postId}`))
             ?.data;
+        console.log(postData);
 
         if (!postData) return;
 
         document.getElementById('post-title').innerText = postData.post_title;
         document.getElementById('post-profile').src =
             postData.author.profile_image;
-        document.getElementById('post-writer').innerText = postData.author.name;
+        document.getElementById('post-writer').innerText =
+            postData.author.username;
         document.getElementById('post-time').innerText = postData.created_at;
 
-        const postImageName = postData.post_image.split('/').pop();
-        document.getElementById('post-image').src =
-            `${BASE_URL}/post-images/${postImageName}`;
+        const postImagesElement = document.querySelector('.post-images');
+        const postImageElement = document.getElementById('post-image');
+        if (postData.post_image_url) {
+            const postImageName = postData.post_image_url.split('/').pop();
+            postImageElement.src = `${BASE_URL}/post-images/${postImageName}`;
+            postImageElement.style.display = 'block';
+        } else {
+            postImagesElement.style.display = 'none';
+            postImageElement.style.display = 'none'; // 이미지가 없으면 숨김 처리
+        }
 
         document.getElementById('post-text').innerText = postData.post_content;
-        document.getElementById('post-like-count').innerText = postData.likes;
-        document.getElementById('post-views-count').innerText = postData.views;
-        document.getElementById('post-comment-count').innerText =
-            postData.comments;
+        document.getElementById('post-like-count').innerText =
+            postData.post_likes;
+        document.getElementById('post-views-count').innerText =
+            postData.post_views;
 
         const currentUser = await getUserInfo();
-        const isAuthor = currentUser?.id === postData.author.id;
+        const isAuthor = currentUser?.user_id === postData.author.user_id;
 
         document.querySelector('.post-nav-right').innerHTML = isAuthor
             ? `
@@ -77,6 +86,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (deleteButton) {
             deleteButton.addEventListener('click', () => {
                 const postId = getPostIdFromUrl();
+
                 const deletePostModal =
                     document.getElementById('postDeleteModal');
                 const cancelPostDeleteButton =
@@ -99,6 +109,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 credentials: 'include',
                             },
                         );
+
                         if (!response.ok) {
                             throw new Error('삭제할 게시글을 찾지 못했습니다.');
                         }
@@ -119,7 +130,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 댓글을 JSON 파일에서 가져와 표시하는 함수
     const fetchCommentData = async (postId) => {
         try {
-            return await fetchAPI(`${BASE_URL}/api/posts/${postId}/comments`);
+            return await fetchAPI(`${BASE_URL}/api/comments/${postId}`);
         } catch (e) {
             console.error('comments fetch error:', e);
         }
@@ -140,15 +151,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         const currentUser = await getUserInfo();
 
         commentsData.forEach((comment) => {
-            const isAuthor = currentUser?.id === comment.comment_author.user_id;
+            const isAuthor = currentUser?.user_id === comment.author.user_id;
 
             const commentCard = `
                 <div class="comment" data-comment-id="${comment.comment_id}">
-                    <img src="${comment.comment_author.profile_image}" alt="프로필 사진">
+                    <img src="${comment.author.profile_image}" alt="프로필 사진">
                     <div class="comment-content">
                         <div class="comment-header">
-                            <h4>${comment.comment_author.nickname}</h4>
-                            <small>${comment.comment_created_at}</small>
+                            <h4>${comment.author.username}</h4>
+                            <small>${comment.created_at}</small>
                         </div>
                         <div class="comment-text">${comment.comment_content}</div>
                         ${
@@ -167,6 +178,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             commentList.insertAdjacentHTML('beforeend', commentCard);
         });
+
+        // 댓글 수 업데이트
+        const commentsCount = commentsData.length;
+        document.getElementById('post-comment-count').textContent =
+            commentsCount;
     };
 
     const initializeCommentEvents = () => {
@@ -213,7 +229,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             try {
                 await fetchAPI(
-                    `${BASE_URL}/api/posts/${postId}/comments/${commentId}`,
+                    `${BASE_URL}/api/comments/${postId}/${commentId}`,
                     {
                         method: 'DELETE',
                     },
@@ -227,42 +243,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 targetCommentCard = null;
             }
 
-            try {
-                await fetchAPI(
-                    `${BASE_URL}/api/posts/${postId}/comments_decrease`,
-                    {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                    },
-                );
-            } catch (e) {
-                console.error('댓글 수 감소 에러:', e);
-            }
+            // 댓글 렌더링 업데이트
+            await renderComments();
         });
     };
 
-    const getCommentsFromServer = async () => {
-        const postId = getPostIdFromUrl();
-        try {
-            const responseJson = await fetchAPI(
-                `${BASE_URL}/api/posts/${postId}/comments_count`,
-                {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' },
-                },
-            );
-
-            const comments = await responseJson?.data;
-
-            document.getElementById('post-comment-count').textContent =
-                comments;
-        } catch (e) {
-            console.error('error:', e);
-        }
-    };
-
     await renderComments();
-    await getCommentsFromServer();
     initializeCommentEvents();
 
     let isEditing = false;
@@ -273,8 +259,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const commentInput = document.getElementById('comment-input');
             const commentText = commentInput.value;
             const postId = getPostIdFromUrl();
-
-            getCommentsFromServer();
 
             if (commentText.trim() === '') {
                 alert('댓글 내용을 입력해주세요.');
@@ -287,8 +271,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         .commentId;
 
                 try {
-                    const response = await fetchAPI(
-                        `${BASE_URL}/api/posts/${postId}/comments/${commentId}`,
+                    await fetchAPI(
+                        `${BASE_URL}/api/comments/${postId}/${commentId}`,
                         {
                             method: 'PATCH',
                             headers: { 'Content-Type': 'application/json' },
@@ -297,8 +281,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                             }),
                         },
                     );
-
-                    //if (!response.ok) throw new Error('댓글 수정 에러');
 
                     isEditing = false;
                     commentInput.value = '';
@@ -313,14 +295,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                     console.error('Comment Modify Error:', e);
                 }
             } else {
-                const comment_content = commentText;
-
                 try {
-                    await fetchAPI(`${BASE_URL}/api/posts/${postId}/comments`, {
+                    await fetchAPI(`${BASE_URL}/api/comments/${postId}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            comment_content,
+                            comment_content: commentText,
                         }),
                     });
 
@@ -332,65 +312,91 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
+    // 좋아요 상태를 확인하고 버튼 스타일 업데이트 함수
+    const updateLikeButton = async (postId, userId, likeButton) => {
+        try {
+            const likeStatus = await fetchAPI(
+                `${BASE_URL}/api/likes/${postId}/${userId}`,
+                {
+                    method: 'GET',
+                    credentials: 'include',
+                },
+            );
+
+            console.log(likeStatus);
+
+            // 좋아요 상태에 따라 배경색 변경
+            likeButton.style.backgroundColor = likeStatus.data
+                ? '#d9d9d9' // 좋아요 클릭된 상태
+                : '#9e9595'; // 좋아요 클릭되지 않은 상태
+        } catch (error) {
+            console.error('Failed to fetch like status:', error);
+        }
+    };
+
+    // 좋아요 상태를 확인하고 버튼 스타일 업데이트 함수
+    const firstUpdateLikeButton = async (postId, userId, likeButton) => {
+        try {
+            const likeStatus = await fetchAPI(
+                `${BASE_URL}/api/likes/${postId}/${userId}`,
+                {
+                    method: 'GET',
+                    credentials: 'include',
+                },
+            );
+
+            console.log(likeStatus);
+
+            // 좋아요 상태에 따라 배경색 변경
+            likeButton.style.backgroundColor = likeStatus.data
+                ? '#9e9595' // 좋아요 클릭된 상태
+                : '#d9d9d9'; // 좋아요 클릭되지 않은 상태
+        } catch (error) {
+            console.error('Failed to fetch like status:', error);
+        }
+    };
+
     const initializeLikeButton = async () => {
         const postId = getPostIdFromUrl();
-        const likeStatus = await fetchAPI(
-            `${BASE_URL}/api/posts/${postId}/likes/like-status`,
-            {
-                method: 'GET',
-                credentials: 'include',
-            },
-        );
-
+        const user = await getUserInfo();
+        const userId = user?.user_id;
         const likeButton = document.querySelector('.post-like');
-        likeButton.classList.toggle('liked', likeStatus?.liked || false);
+
+        // 초기 좋아요 상태 확인 및 스타일 업데이트
+        firstUpdateLikeButton(postId, userId, likeButton);
 
         likeButton.addEventListener('click', async () => {
-            likeButton.classList.toggle('liked');
-            const updatedLikes = await fetchAPI(
-                `${BASE_URL}/api/posts/${postId}/likes`,
+            // likeStatus 가 true이면 좋아요 누른 것, false면 안 누른 것것
+            await updateLikeButton(postId, userId, likeButton);
+
+            await fetchAPI(`${BASE_URL}/api/likes/${postId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: userId }),
+            });
+            const likesCount = await fetchAPI(
+                `${BASE_URL}/api/likes/${postId}`,
                 {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'GET',
+                    credentials: 'include',
                 },
             );
             document.getElementById('post-like-count').innerText =
-                updatedLikes?.data || 0;
+                likesCount?.data || 0;
         });
     };
 
     const updateViewCount = async () => {
         const postId = getPostIdFromUrl();
-        await fetchAPI(`${BASE_URL}/api/posts/${postId}/views`, {
-            method: 'POST',
-        });
-        const views = (await fetchAPI(`${BASE_URL}/api/posts/${postId}/views`))
-            ?.data;
+        const response = await fetchAPI(
+            `${BASE_URL}/api/posts/${postId}/views`,
+            {
+                method: 'POST',
+            },
+        );
+        const views = response?.data;
         document.getElementById('post-views-count').innerText = views || 0;
     };
-
-    const addCommentsCount = async () => {
-        const postId = getPostIdFromUrl();
-        try {
-            await fetchAPI(`${BASE_URL}/api/posts/${postId}/comments_add`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
-        } catch (e) {
-            console.error('댓글 수 증가 에러:', e);
-        }
-    };
-
-    document
-        .getElementById('comment-submit-btn')
-        .addEventListener('click', () => {
-            addCommentsCount();
-            getCommentsFromServer();
-        });
-
-    document.getElementById('confirmDelete').addEventListener('click', () => {
-        getCommentsFromServer();
-    });
 
     await renderUserData();
     await renderPost();

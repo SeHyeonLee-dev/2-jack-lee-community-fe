@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const checkDuplicateNickname = async (nickname) => {
         try {
             const result = await fetchAPI(
-                `${BASE_URL}/api/users/check-nickname?nickname=${nickname}`,
+                `${BASE_URL}/api/users/check-username?username=${nickname}`,
             );
             if (result.available) {
                 helperTextElement.textContent = '* 사용 가능한 닉네임입니다.';
@@ -77,14 +77,21 @@ document.addEventListener('DOMContentLoaded', async () => {
             credentials: 'include',
         });
         if (result) {
-            const { nickname, email, profile_image, id } = result;
-            profileImage.src = profile_image;
-            profileNickname.textContent = `Hi ${nickname}😊😊`;
+            const { username, email, profile_image_url, user_id } = result;
 
-            userModifyProfileImage.src = profile_image;
+            profileImage.src = profile_image_url
+                ? profile_image_url
+                : 'https://www.gravatar.com/avatar/?d=mp';
+
+            profileNickname.textContent = `Hi ${username}😊😊`;
+
+            userModifyProfileImage.src = profile_image_url
+                ? profile_image_url
+                : 'https://www.gravatar.com/avatar/?d=mp';
+
             userModifyNickname.textContent = email;
-            userModifyNicknameInput.value = nickname;
-            userId = id;
+            userModifyNicknameInput.value = username;
+            userId = user_id;
         } else {
             showLoggedOutState();
         }
@@ -137,7 +144,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        let profileImageUrl = null;
+        let profileImageUrl = '';
         if (file) {
             const formData = new FormData();
             formData.append('profile_image', file);
@@ -149,22 +156,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                         body: formData,
                     },
                 );
-                profileImageUrl = result.data.profile_image;
+                profileImageUrl = result.data.profile_image_url;
             } catch {
                 alert('이미지 업로드 중 오류가 발생했습니다.');
                 return;
             }
         }
 
-        const body = {
-            nickname,
-            profile_image: profileImageUrl || profileImage.src,
-        };
         try {
             await fetchAPI(`http://localhost:3000/api/users/${userId}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body),
+                body: JSON.stringify({
+                    username: nickname,
+                    profile_image_url: profileImageUrl,
+                }),
             });
             alert('프로필이 성공적으로 업데이트되었습니다!');
         } catch {
