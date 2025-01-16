@@ -41,8 +41,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!postData) return;
 
         document.getElementById('post-title').innerText = postData.post_title;
-        document.getElementById('post-profile').src =
-            postData.author.profile_image;
+        document.getElementById('post-profile').src = postData.author
+            .profile_image
+            ? postData.author.profile_image
+            : 'https://www.gravatar.com/avatar/?d=mp';
         document.getElementById('post-writer').innerText =
             postData.author.username;
         document.getElementById('post-time').innerText = postData.created_at;
@@ -152,10 +154,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         commentsData.forEach((comment) => {
             const isAuthor = currentUser?.user_id === comment.author.user_id;
+            const commentProfileImage = comment.author.profile_image
+                ? comment.author.profile_image
+                : 'https://www.gravatar.com/avatar/?d=mp';
 
             const commentCard = `
                 <div class="comment" data-comment-id="${comment.comment_id}">
-                    <img src="${comment.author.profile_image}" alt="프로필 사진">
+                    <img src="${commentProfileImage}" alt="프로필 사진">
                     <div class="comment-content">
                         <div class="comment-header">
                             <h4>${comment.author.username}</h4>

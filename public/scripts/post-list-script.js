@@ -18,28 +18,65 @@ document.addEventListener('DOMContentLoaded', async () => {
         writeBtn.style.backgroundColor = '#7F6AEE';
     });
 
+    // 게시글 목록을 저장하는 상태 관리 변수
+    let nextCursor = null; // 서버에서 반환되는 커서
+    let isFetching = false; // 데이터 로딩 중인지 확인
+    const limit = 10; // 한 번에 가져올 게시글 수
+
+    // IntersectionObserver를 이용한 무한 스크롤링
+    const observer = new IntersectionObserver(
+        async (entries) => {
+            const [entry] = entries;
+            if (entry.isIntersecting) {
+                await fetchPosts(); // 데이터 로드
+            }
+        },
+        {
+            root: null, // 뷰포트 기준
+            rootMargin: '0px',
+            threshold: 1.0, // 요소가 완전히 보일 때 트리거
+        },
+    );
+
     // 데이터 가져오는 함수
     const fetchPosts = async () => {
+        if (isFetching) return; // 데이터 로딩 중이면 중단
+
         try {
-            const response = await fetch(`${BASE_URL}/api/posts`);
+            isFetching = true; // 로딩 시작
+            console.log('nextCursor:', nextCursor);
+            const query = nextCursor
+                ? `?cursor=${nextCursor}&limit=${limit}`
+                : `?limit=${limit}`;
+            console.log('query: ', query);
+            const response = await fetch(`${BASE_URL}/api/posts${query}`);
+
             if (!response.ok) {
                 throw new Error('게시글을 불러올 수 없음');
             }
-            const { data } = await response.json();
-            const postArray = Object.values(data); // 객체를 배열로 변환
 
-            renderPosts(postArray);
+            const { data } = await response.json();
+
+            // 데이터가 더 이상 없으면 로딩 중단
+            if (data.posts.length === 0) {
+                observer.disconnect(); // 스크롤 이벤트 중단
+                return;
+            }
+
+            renderPosts(data.posts);
+            nextCursor = data.nextCursor; // 다음 커서 업데이트
         } catch (error) {
             console.error('Fetch error:', error);
+        } finally {
+            isFetching = false; // 로딩 종료
         }
     };
 
     // 게시글 생성 함수
-    const renderPosts = async (posts) => {
+    const renderPosts = (posts) => {
         const postList = document.getElementById('post-list');
 
         for (const post of posts) {
-            console.log(post);
             const postCard = document.createElement('div');
             postCard.className = 'post-card';
             postCard.style.cursor = 'pointer';
@@ -64,7 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
                 <div class="post-info-writer">
                     <div class="writer-profile">
-                        <img class="writer-profile-img" src="${post.author.profile_image ? post.author.profile_image : 'https://www.gravatar.com/avatar/?d=mp'}"  alt="작성자 이미지">
+                        <img class="writer-profile-img" src="${post.author.profile_image ? post.author.profile_image : 'https://www.gravatar.com/avatar/?d=mp'}" alt="작성자 이미지">
                     </div>
                     <div class="writer-name">
                         <p><b>${post.author.username}</b></p>
@@ -81,6 +118,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
+    // 무한 스크롤 감시 대상
+    const sentinel = document.getElementById('sentinel');
+    observer.observe(sentinel);
+
+    // 초기 데이터 로드
     await fetchPosts();
 
     const profileImage = document.getElementById('profile-image');
