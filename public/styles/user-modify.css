@@ -1,0 +1,355 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Orbitron', sans-serif;
+}
+body {
+    background-color: #1e1e1c;
+    background-image: repeating-linear-gradient(
+            90deg,
+            #2c2c2a 0px,
+            #2c2c2a 2px,
+            transparent 2px,
+            transparent 10vw
+        ),
+        repeating-linear-gradient(
+            180deg,
+            #2c2c2a 0px,
+            #2c2c2a 2px,
+            transparent 2px,
+            transparent 8.33vh
+        ),
+        repeating-linear-gradient(
+            90deg,
+            #1e1e1c 0%,
+            #1d1d1b 20%,
+            #1e1e1c 40%,
+            #1d1d1b 60%,
+            #1e1e1c 80%,
+            #1d1d1b 100%
+        );
+    background-size: 10vw 8.33vh;
+    color: #fff;
+}
+
+button {
+    border: 0;
+    background-color: transparent;
+}
+a {
+    text-decoration: none;
+    color: black;
+}
+img {
+    object-fit: cover;
+}
+
+/* 헤더 CSS */
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 104px;
+    border-bottom: 1px solid #8b7b6f;
+    box-shadow: 0px 0px 10px rgba(139, 123, 111, 0.5);
+    background: linear-gradient(
+        90deg,
+        rgba(44, 44, 42, 0.9),
+        rgba(30, 30, 28, 0.9)
+    );
+    backdrop-filter: blur(5px);
+    margin-bottom: 2em;
+}
+header .header-wrap {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 592px;
+}
+header #title {
+    width: 206px;
+    height: 32px;
+    font-weight: 400;
+    font-size: 2em;
+    font-weight: 700;
+    text-shadow: 0px 0px 10px rgba(0, 255, 255, 0.8);
+    color: white;
+}
+
+header #profile-image {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    transition:
+        transform 0.3s ease-in-out,
+        box-shadow 0.3s ease-in-out;
+    box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.8);
+}
+
+header #profile-image:hover {
+    transform: scale(1.1);
+    box-shadow:
+        0px 0px 20px rgba(0, 255, 255, 1),
+        0px 0px 20px rgba(255, 0, 255, 1);
+}
+
+#profile-nickname {
+    font-size: 20px;
+    font-weight: 700;
+    width: max-content;
+    color: white;
+    margin-top: 16px;
+}
+
+/* 드롭다운 메뉴 스타일 */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+.dropdown span {
+    position: absolute;
+    top: -14px;
+    left: 160px;
+}
+
+.dropbtn_icon {
+    font-family: 'Material Icons';
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    z-index: 1; /*다른 요소들보다 앞에 배치*/
+    font-weight: 400;
+    background: rgba(20, 20, 20, 0.9);
+    border: 2px solid #00ffff;
+    box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.8);
+    min-width: 115px;
+    min-height: 105px;
+    margin-top: 30px;
+    margin-left: 80px;
+}
+.dropdown-content a {
+    display: block;
+    text-decoration: none;
+    color: rgb(37, 37, 37);
+    font-size: 12px;
+    padding: 12px 20px;
+    text-align: center;
+    color: #00ffff;
+}
+.dropdown-content a:hover {
+    background: rgba(0, 255, 255, 0.2);
+}
+
+/* 회원정보수정 섹션 css */
+.user-modify-wrap {
+    max-width: 492px;
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 200px auto 0;
+    gap: 20px;
+    background: rgba(20, 20, 20, 0.9);
+    border: 3px solid #00ffff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 255, 255, 0.8);
+}
+.user-modify-profile {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.user-modify-profile h2 {
+    width: 177px;
+    height: 38px;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 38.19px;
+    margin-bottom: 12px;
+    color: #ffd700;
+    text-shadow: 0px 0px 8px rgba(255, 215, 0, 0.8);
+}
+p,
+label {
+    color: #00ffff;
+    text-shadow: 0px 0px 5px rgba(0, 255, 255, 0.8);
+}
+input {
+    background: rgba(20, 20, 20, 0.9);
+    border: 2px solid #00ffff;
+    color: white;
+}
+button {
+    background: linear-gradient(45deg, #ff00ff, #00ffff);
+    box-shadow: 0px 0px 15px rgba(255, 0, 255, 0.8);
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.user-modify-profile p {
+    width: 81px;
+    height: 18px;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 17.9px;
+    margin-top: 8px;
+    margin-right: 75%;
+}
+#user-modify-profile-image {
+    width: 149px;
+    height: 149px;
+    border-radius: 50%;
+    margin: 20px 0;
+}
+.user-modify-name {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.user-modify-name p {
+    width: 42px;
+    height: 18px;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 17.9px;
+}
+.user-modify-name span {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16.71px;
+}
+.user-modify-name label {
+    width: 42px;
+    height: 18px;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 17.9px;
+}
+.user-modify-name input {
+    width: 95%;
+    height: 34px;
+    border-radius: 8px;
+}
+.helper-text {
+    font-size: 0.8em;
+    color: red;
+    margin-top: 4px;
+}
+.user-modify-name-form {
+    display: flex;
+    flex-direction: column;
+}
+.user-modify-name-form label {
+    margin-bottom: 8px;
+}
+
+/* 수정하기, 회원탈퇴, 수정완료 버튼 css*/
+button {
+    cursor: pointer;
+}
+#user-modify-btn {
+    width: 355px;
+    height: 37px;
+    border-radius: 4px;
+    background-color: #aca0eb;
+    color: #fff;
+}
+#user-modify-delete {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16.71px;
+    background: #151515;
+    box-shadow: none;
+}
+#user-modify-complete {
+    width: 112px;
+    height: 52px;
+    padding: 16px 20px;
+    border-radius: 30px;
+    background-color: #aca0eb;
+    color: #fff;
+    font-size: 18px;
+    line-height: 21.6px;
+    margin-top: 40px;
+}
+
+/* 회원탈퇴 모달 스타일 */
+.modal {
+    display: none; /* 기본적으로 숨김 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: transparent;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* 가장 앞에 표시 */
+}
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    row-gap: 30px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    width: 408px;
+    height: 242px;
+    z-index: 1001; /* 부모보다 더 높은 z-index */
+}
+.modal-content p {
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 28.64px;
+}
+.modal-content button {
+    width: 127px;
+    height: 44px;
+}
+.confirm-btn {
+    background-color: #c4a5fa;
+    color: #000;
+    padding: 8px 16px;
+    margin-right: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 12px;
+}
+.cancel-btn {
+    background-color: #000;
+    color: #fff;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 12px;
+}
+#change-profile-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1d1d1b;
+    box-shadow: none;
+    color: white;
+    border: 1px solid #ffffff;
+    border-radius: 25px;
+    padding: 6px 12px;
+    cursor: pointer;
+    z-index: 1;
+}

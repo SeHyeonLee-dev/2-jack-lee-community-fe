@@ -5,6 +5,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const getPostIdFromUrl = () =>
         window.location.pathname.split('/').slice(-2, -1)[0];
 
+    // 뒤로가기 버튼 클릭 시 게시글 목록 페이지 이동
+    const backButton = document.querySelector('.back-btn');
+    backButton.addEventListener('click', () => {
+        event.preventDefault(); // 기본 동작(새로고침) 방지
+        window.location.href = '/posts';
+    });
+
     // 로그인 시 세션에서 유저 데이터 가져오는 함수
     const getUserInfo = async () => {
         try {
@@ -66,6 +73,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     loadPostData();
+
+    const titleInput = document.getElementById('post-title');
+    const contentInput = document.getElementById('post-content');
+    const helperText = document.querySelector('.helper-text');
+    const submitButton = document.getElementById('post-modify-complete-btn');
+
+    // 입력 값이 변경될 때 helper-text 업데이트
+    const updateHelperText = () => {
+        if (!titleInput.value.trim() && !contentInput.value.trim()) {
+            helperText.textContent = '* 제목과 내용을 입력해주세요.';
+        } else if (!titleInput.value.trim()) {
+            helperText.textContent = '* 제목을 입력해주세요.';
+        } else if (!contentInput.value.trim()) {
+            helperText.textContent = '* 내용을 입력해주세요.';
+        } else {
+            helperText.textContent = '';
+        }
+    };
+
+    // 입력 필드에 이벤트 리스너 추가
+    titleInput.addEventListener('input', updateHelperText);
+    contentInput.addEventListener('input', updateHelperText);
+
+    // 수정하기 버튼 클릭 시 유효성 검사
+    submitButton.addEventListener('click', (event) => {
+        if (!titleInput.value.trim() || !contentInput.value.trim()) {
+            event.preventDefault(); // 폼 제출 방지
+            updateHelperText();
+        }
+    });
 
     // 수정하기 버튼 클릭 시 게시글 내용 수정
     document

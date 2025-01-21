@@ -128,10 +128,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const profileImage = document.getElementById('profile-image');
     const profileNickname = document.getElementById('profile-nickname');
 
-    profileNickname.addEventListener('click', () => {
-        window.location.href = `/users/login`;
-    });
-
     // 로그인 상태에 따라 프로필 업데이트
     try {
         const userData = await fetch(`${BASE_URL}/api/auths/profile`, {
@@ -148,6 +144,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             profileNickname.textContent = `Hi ${username} 😊😊`;
+            profileNickname.style.pointerEvents = 'none'; // 클릭 불가
 
             // 드롭다운 요소 클릭 시 다른 페이지 이동
             document

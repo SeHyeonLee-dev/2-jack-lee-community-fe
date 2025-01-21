@@ -1,0 +1,313 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Orbitron', sans-serif;
+}
+
+body {
+    font-family: 'Orbitron', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    background-color: #1e1e1c; /* 기본 배경 */
+
+    /* 블록 배경과 테두리 추가 */
+    background-image: repeating-linear-gradient(
+            90deg,
+            #2c2c2a 0px,
+            #2c2c2a 2px,
+            /* 수직 테두리 */ transparent 2px,
+            transparent 10vw
+        ),
+        repeating-linear-gradient(
+            180deg,
+            #2c2c2a 0px,
+            #2c2c2a 2px,
+            /* 수평 테두리 */ transparent 2px,
+            transparent 8.33vh
+        ),
+        repeating-linear-gradient(
+            90deg,
+            /* 블록 내부 색상 (수평 그라디언트) */ #1e1e1c 0%,
+            #1e1e1c 10%,
+            #1d1d1b 20%,
+            #1e1e1c 30%,
+            #1d1d1b 40%,
+            #1e1e1c 50%,
+            #1d1d1b 60%,
+            #1e1e1c 70%,
+            #1d1d1b 80%,
+            #1e1e1c 90%,
+            #1d1d1b 100%
+        );
+
+    /* 블록 크기: 가로 1/10, 세로 1/12 */
+    background-size: 10vw 8.33vh;
+}
+
+/* 🚀 네온 효과가 적용된 헤더 */
+header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    z-index: 1000;
+
+    background: linear-gradient(
+        90deg,
+        rgba(44, 44, 42, 0.9),
+        rgba(30, 30, 28, 0.9)
+    ); /* 투명도 있는 네온 그라디언트 */
+    backdrop-filter: blur(5px); /* 블러 효과 */
+    border-bottom: 3px solid #8b7b6f; /* 부드러운 네온 톤 테두리 */
+    box-shadow: 0px 0px 10px rgba(139, 123, 111, 0.5); /* 네온 빛 퍼지는 효과 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    font-family: 'Orbitron', sans-serif; /* 미래적인 폰트 */
+    text-transform: uppercase;
+}
+
+.title {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 2em;
+    text-shadow: 0px 0px 10px rgba(0, 255, 255, 0.8);
+    cursor: default; /* 마우스를 올려도 커서가 변경되지 않음 */
+}
+
+/* 🚀 프로필 이미지 */
+#profile-image {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    object-fit: cover;
+    transition:
+        transform 0.3s ease-in-out,
+        box-shadow 0.3s ease-in-out;
+    box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.8);
+}
+
+/* 🚀 hover 시 네온 효과 적용 */
+#profile-image:hover {
+    transform: scale(1.1); /* 살짝 확대 */
+    box-shadow:
+        0px 0px 20px rgba(0, 255, 255, 1),
+        0px 0px 20px rgba(255, 0, 255, 1);
+}
+
+.post-list-container {
+    width: 30%;
+    min-width: 600px;
+    margin-top: 50px;
+    padding: 10px;
+}
+
+/* 🚀 환영 메시지 */
+.welcome {
+    width: 70%;
+    font-size: 1.5em;
+    text-align: center;
+    padding: 20px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+
+    /* 칠판 스타일 배경 */
+    background: rgba(20, 20, 20, 0.9);
+    border: 3px solid #00ffff; /* 네온 블루 테두리 */
+    border-radius: 10px;
+
+    /* 네온 빛 효과 */
+    box-shadow: 0px 0px 15px rgba(0, 255, 255, 0.8);
+
+    /* 네온 글씨 효과 */
+    color: #ffd700;
+    text-shadow: 0px 0px 8px rgba(255, 215, 0, 0.8);
+
+    /* 가독성 향상을 위한 추가 스타일 */
+    font-weight: bold;
+    text-transform: uppercase;
+
+    cursor: default;
+}
+
+.post-write-box {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+    margin-top: 20px;
+}
+
+#write-btn {
+    padding: 8px 24px;
+    background: linear-gradient(45deg, #ff00ff, #00ffff);
+    box-shadow: 0px 0px 15px rgba(255, 0, 255, 0.8);
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+}
+
+#write-btn:hover {
+    box-shadow:
+        0px 0px 25px rgba(255, 0, 255, 1),
+        0px 0px 25px rgba(0, 255, 255, 1);
+}
+
+.post-card {
+    min-width: 600px;
+    border-radius: 8px;
+    padding: 10px;
+    background: #1e1e1c;
+    border: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.post-title {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: white;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: -10px;
+}
+
+.post-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+    color: white;
+    margin-top: 5px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.post-info-left {
+    display: flex;
+    gap: 20px;
+}
+
+.post-info-left p {
+    margin: 0 5px;
+}
+
+.post-info-item {
+    display: flex;
+    align-items: center;
+    gap: 4px; /* 텍스트와 숫자 간 간격 */
+}
+
+.post-info-right {
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+    color: white;
+}
+
+.post-info-writer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 20px;
+}
+
+.writer-profile {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.writer-profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.writer-name {
+    font-size: 0.95em;
+    color: white;
+}
+
+/* 헤더 수정 */
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 104px;
+    border-bottom: 1px solid #000;
+}
+header .header-wrap {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 592px;
+}
+header #title {
+    width: 206px;
+    height: 32px;
+    font-weight: 400;
+    font-size: 32px;
+}
+
+#profile-nickname {
+    font-size: 20px;
+    font-weight: 700;
+    width: max-content;
+    color: white;
+    margin-top: 20px;
+}
+
+/* 드롭다운 메뉴 스타일 */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+.dropdown span {
+    position: absolute;
+    top: -14px;
+    left: 160px;
+}
+
+.dropbtn_icon {
+    font-family: 'Material Icons';
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    z-index: 1; /*다른 요소들보다 앞에 배치*/
+    font-weight: 400;
+    background: rgba(20, 20, 20, 0.9);
+    border: 2px solid #00ffff;
+    box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.8);
+    min-width: 115px;
+    min-height: 105px;
+    margin-top: 30px;
+    margin-left: 80px;
+}
+.dropdown-content a {
+    display: block;
+    text-decoration: none;
+    color: rgb(37, 37, 37);
+    font-size: 12px;
+    padding: 12px 20px;
+    text-align: center;
+    color: #00ffff;
+}
+.dropdown-content a:hover {
+    background: rgba(0, 255, 255, 0.2);
+}
