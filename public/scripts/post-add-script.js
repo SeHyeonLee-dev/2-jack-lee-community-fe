@@ -1,4 +1,25 @@
-import { BASE_URL } from '../../global.js';
+import { BASE_URL } from '../global.js';
+
+const checkAuth = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}/api/auths/check-session`, {
+            method: 'GET',
+            credentials: 'include', // ✅ 세션 쿠키 포함 필수
+        });
+
+        if (response.status === 401) {
+            console.warn(
+                'Unauthorized access detected. Redirecting to login page...',
+            );
+            window.location.href = '/users/login'; // ✅ 로그인 페이지로 강제 이동
+        }
+    } catch (error) {
+        console.error('Error checking auth:', error);
+    }
+};
+
+// 페이지 로드 시 자동 실행
+document.addEventListener('DOMContentLoaded', checkAuth);
 
 document.addEventListener('DOMContentLoaded', () => {
     const titleInput = document.getElementById('title');
@@ -56,11 +77,13 @@ document.addEventListener('DOMContentLoaded', () => {
             // 게시글 작성 API 요청
             const postResponse = await fetch(`${BASE_URL}/api/posts`, {
                 method: 'POST',
+                credentials: 'include', // 쿠키 포함
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ post_title, post_content }),
             });
 
             const result = await postResponse.json();
+            console.log(result);
             const postId = result.data.post_id;
 
             // 게시글 이미지 업로드 API 요청

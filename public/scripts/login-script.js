@@ -1,4 +1,4 @@
-import { BASE_URL } from '../../global.js';
+import { BASE_URL } from '../global.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const jackTitle = document.getElementById('jack-title');
@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify({ email, password }),
             });
 

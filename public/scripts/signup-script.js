@@ -1,4 +1,4 @@
-import { BASE_URL } from '../../global.js';
+import { BASE_URL } from '../global.js';
 
 const registerForm = document.querySelector('.signup-form');
 const jackTitle = document.getElementById('jack-title');

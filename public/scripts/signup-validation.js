@@ -1,3 +1,5 @@
+import { BASE_URL } from '../global.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     const emailInput = document.getElementById('emailInput');
     const passwordInput = document.getElementById('passwordInput');
@@ -29,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     profileImage.addEventListener('change', profileImageUploaded);
 
+    // 이메일 유효성 검사 함수
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email) return '이메일을 입력해주세요.';
@@ -70,7 +73,42 @@ document.addEventListener('DOMContentLoaded', () => {
         return '';
     };
 
-    const handleValidation = () => {
+    // 이메일 중복 검사 함수
+    const checkEmailDuplicate = async (email) => {
+        const emailValue = email.trim();
+        if (!email) return;
+
+        try {
+            const response = await fetch(
+                `${BASE_URL}/api/users/check-email?email=${emailValue}`,
+            );
+            const data = await response.json();
+
+            return !data.available; // `available`이 false이면 중복된 이메일 (true 반환)
+        } catch (error) {
+            console.error('이메일 중복 검사 오류:', error);
+        }
+    };
+
+    // 닉네임 중복 검사 함수
+    const checkNicknameDuplicate = async (nickname) => {
+        const nicknameValue = nickname.trim();
+        if (!nicknameValue) return false; // 기본적으로 false 반환
+
+        try {
+            const response = await fetch(
+                `${BASE_URL}/api/users/check-username?username=${nicknameValue}`,
+            );
+            const data = await response.json();
+
+            return !data.available; // `available`이 false이면 중복된 닉네임 (true 반환)
+        } catch (error) {
+            console.error('닉네임 중복 검사 오류:', error);
+            return false; // 기본적으로 중복이 없다고 가정
+        }
+    };
+
+    const handleValidation = async () => {
         const emailError = validateEmail(emailInput.value);
         const passwordError = validatePassword(passwordInput.value);
         const confirmPasswordError = validateConfirmPassword(
@@ -85,6 +123,36 @@ document.addEventListener('DOMContentLoaded', () => {
         helperTexts[2].textContent = passwordError;
         helperTexts[3].textContent = confirmPasswordError;
         helperTexts[4].textContent = nicknameError;
+
+        // 비동기 이메일 중복 검사
+        if (!emailError) {
+            const isDuplicate = await checkEmailDuplicate(emailInput.value);
+            if (isDuplicate) {
+                helperTexts[1].textContent = '이미 사용 중인 이메일입니다.';
+                signupButton.disabled = true;
+                signupButton.style.backgroundColor = '#ACA0EB';
+                signupButton.style.cursor = 'not-allowed';
+                return; // 중복된 경우 실행 중단
+            } else {
+                helperTexts[1].textContent = '사용 가능한 이메일입니다.';
+            }
+        }
+
+        // 비동기 닉네임 중복 검사
+        if (!nicknameError) {
+            const isNicknameDuplicate = await checkNicknameDuplicate(
+                nicknameInput.value,
+            );
+            if (isNicknameDuplicate) {
+                helperTexts[4].textContent = '중복된 닉네임입니다.';
+                signupButton.disabled = true;
+                signupButton.style.backgroundColor = '#ACA0EB';
+                signupButton.style.cursor = 'not-allowed';
+                return; // 닉네임이 중복된 경우 실행 중단
+            } else {
+                helperTexts[4].textContent = '사용 가능한 닉네임입니다.';
+            }
+        }
 
         if (
             emailError ||
