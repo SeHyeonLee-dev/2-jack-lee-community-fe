@@ -5,12 +5,14 @@
     "main": "front-server.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "nodemon front-server.js"
+        "start": "cross-env NODE_ENV=development node front-server.js",
+        "start:prod": "cross-env NODE_ENV=production node front-server.js"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "cross-env": "^7.0.3",
         "dotenv": "^16.4.7",
         "express": "^4.21.1",
         "multer": "^1.4.5-lts.1",

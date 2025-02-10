@@ -1,8 +1,10 @@
 import express from 'express';
 import path from 'path';
+import dotenv from 'dotenv';
+import { API_BASE_URL, NODE_ENV, API_BASE_PORT } from './public/config.js';
 
 const app = express();
-const PORT = 3001;
+const PORT = API_BASE_PORT;
 
 // 현재 디렉토리 설정
 const __dirname = path.resolve();
@@ -50,5 +52,9 @@ app.get('/posts/:post_id/edit', (req, res) => {
 
 // 서버 실행
 app.listen(PORT, () => {
-    console.log(`✅ 프론트엔드 서버 실행: http://localhost:${PORT}`);
+    if (NODE_ENV === 'production') {
+        console.log(`🚀 [PRODUCTION] 프론트엔드 서버 실행: ${API_BASE_URL}`);
+    } else {
+        console.log(`✅ [DEVELOPMENT] 프론트엔드 서버 실행: ${API_BASE_URL}`);
+    }
 });
